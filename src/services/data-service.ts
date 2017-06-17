@@ -62,10 +62,7 @@ export class DataService {
     * Atualizar status de uma mesa
     */
     updateMesa(idestab: string, idmesa: string, status: string){
-        this.mesas = this.db.list('/estabelecimentos/'+idestab+'/mesas');
-        this.mesas.update(idmesa, {
-            status: status
-        });
+        this.db.object('/mesas/'+idestab+'/'+idmesa).update({ status: status });
     }
 
     

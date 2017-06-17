@@ -25,8 +25,10 @@ export class CheckinPage {
       this.estabelecimentos = [];
   }
   ionViewDidLoad(){
-    //this.lerqrcode(true);
-    this.checkin("-Kmb0HALJ0J_DyYuD3Fe", "-Kmb1KBfT2UMdU6oPhyG");
+    this.lerqrcode(); // funcionamento no celular
+    // 
+    //this.checkin("-Kmb0HALJ0J_DyYuD3Fe", "-Kmb1KBfT2UMdU6oPhyG"); // para teste no desktop
+
   }
 
   /*
@@ -34,21 +36,17 @@ export class CheckinPage {
   verificar a compatibilidade com os ddos retornados do firebase
   */
 
-  lerqrcode(checkin:boolean){
+  lerqrcode(){
       let dados: any;
         this.bcScan.scan().then((barcodeData) => {
             dados = barcodeData.text;
             // criar teste para checar a integridade dos dados antes de enviar para o checkin
-            if(checkin){
-              this.checkin(dados.split("__")[0], dados.split("__")[1]);
-            }else{
-              this.checkout(dados.split("__")[0], dados.split("__")[1]);
-            }
+              this.checkin(dados.split("__")[0], dados.split("__")[1], dados.split("__")[0],);
         }, (err) => {
             console.log("Erro: " + err);
         });
   }
-  checkin(estab: string, mesa: string){
+  checkin(rede: string, estab: string, mesa: string){
     let estabelecimentoescolhido = this.db.getEstabelecimento(estab);
     let tmpStab = new Estabelecimento();
     this.utils.mergeObj(estabelecimentoescolhido, tmpStab);
@@ -59,7 +57,6 @@ export class CheckinPage {
     
   }
   showOptions(estabelecimento, estabKey, idmesa){
-    console.log(estabelecimento +"/"+ estabKey +"/"+ idmesa);
     this.navCtrl.push(EstabelecimentoDetails, {estabelecimento, estabKey, idmesa});
   }
   checkout(estab: string, mesa: string){

@@ -4,6 +4,7 @@ import { NavController } from 'ionic-angular';
 //import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 import { DataService } from '../../services/data-service';
 import { EstabelecimentoDetails } from '../estabelecimento-details/estabelecimento-details';
+import { Rede } from '../../classes/Rede';
 import { Estabelecimento } from '../../classes/estabelecimento';
 import { Mesa } from '../../classes/mesa';
 import { Utils } from '../../classes/utils';
@@ -19,11 +20,13 @@ export class ListaView {
   estabArray: Array<any>;
   originalEstabArray: Array<any>;
   private estabelecimentos: Estabelecimento[];
+  private redes: Rede[];
 
   constructor(public navCtrl: NavController,  private db: DataService, private utils: Utils  /*public db: AngularFireDatabase*/) {
     //this.estabelecimentos = db.list('/estabelecimentos');
     this.estabArray = new Array;
     this.originalEstabArray = new Array;
+    this.redes = new Array;
     this.estabelecimentos = new Array;
     this.iniciarEstabelecimentos();
     this.estabArray = this.originalEstabArray;
@@ -58,23 +61,28 @@ export class ListaView {
     this.db.getRedes().subscribe( redes => {  // retorna array de redes do bd
         redes.forEach(rede => { // varre todas as redes
           /* retorna array de estabelecimentos do bd, de acordo com o key da rede */
+          let tmpRede = new Rede();
+          tmpRede.key = rede.kek;
+          tmpRede.nome = rede.nome;
           this.db.setLimit(1); 
           this.db.getEstabelecimentos(rede.key).subscribe( estabelecimentos => { 
               estabelecimentos.forEach(estabelecimento => { // varre todos os estabelecimentos
                   let tmpEstab = new Estabelecimento();
                   let tmpMesas = this.listamesas(estabelecimento.key);
-                  console.log(tmpMesas);
                   tmpEstab.mesas = tmpMesas;
                   tmpEstab.key = estabelecimento.key;
                   this.utils.mergeObj(estabelecimento.val(), tmpEstab); // copia o objeto remoto para o local
-                  //this.originalEstabArray.push(estabelecimento);
-                  this.estabelecimentos.push(tmpEstab);
+                  tmpRede.estabelecimentos.push(tmpEstab);
               });
+              
           });
+          console.log("Tmp Rede: " + tmpRede);
+          this.redes.push(tmpRede);
         });
         this.estabArray = this.estabelecimentos;
-        console.log(this.estabArray);
-    });
+        console.log(this.redes);
+        
+   });
   }
 
   /* Listar mesas */
@@ -104,11 +112,13 @@ export class ListaView {
       this.estabArray = this.estabelecimentos;
     }else{
       this.estabArray = [];
-      this.estabelecimentos.forEach(element => {
-          let aux: string = element.nome;
-          if( aux.toLowerCase().includes(term.toLowerCase())){
-            this.estabArray.push(element);
-           }
+      this.redes.forEach(rede => {
+        rede.estabelecimentos.forEach(estab => {
+            let aux: string = estab.nome;
+            if( aux.toLowerCase().includes(term.toLowerCase())){
+              this.estabArray.push(estab);
+            }
+        });
       });
 
     }
