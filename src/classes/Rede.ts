@@ -1,22 +1,12 @@
+import { Estabelecimento } from './estabelecimento';
 export class Rede {
-    id: string;
+    key: string;
     nome: string;
-
+    estabelecimentos: Estabelecimento[];
     constructor(){
-        
+        this.key = "";
+        this.nome = "";
+        this.estabelecimentos = [];
     }
 
-    getId(){
-        return this.id;
-    }
-    getNome(){
-        return this.nome;
-    }
-
-    setId(id: string){
-        this.id = id;
-    }
-    setNome(nome: string){
-        this.nome = nome;
-    }
 }

@@ -3,11 +3,24 @@
   <ion-searchbar placeholder="Pesquise..." (ionInput)="pesquisar($event)"></ion-searchbar>
 
   <ion-list>
-    <ion-item *ngFor="let estabelecimento of estabArray" (click)="showOptions(estabelecimento, estabelecimento.key)" >
+    <ion-item *ngFor="let rede of redes" >
+    <ion-item *ngFor="let estabelecimento of redes.estabelecimentos" (click)="showOptions(estabelecimento, estabelecimento.key)" >
       <ion-avatar item-start>
-        <img [src]="estabelecimento.val().imgURL">
+        <img [src]="estabelecimento.imgURL">
       </ion-avatar>
-      <h2>{{estabelecimento.val().nome}}</h2>
-        <p>{{estabelecimento.val().logradouro}}, {{estabelecimento.val().numero}} - {{estabelecimento.val().bairro}}</p>
+      <h2>{{estabelecimento.nome}}</h2>
+        <p>{{estabelecimento.logradouro}}, {{estabelecimento.numero}} - {{estabelecimento.bairro}}</p>
+    <!-- QR para debugs e uso no checkin, excluir esse campo depois -->  
+    <div *ngFor="let mesa of estabelecimento.mesas" class="qr">
+        <h2>Mesa {{mesa.numero}} - {{mesa.status}}</h2><br>
+       <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{estabelecimento.key}}__{{mesa.key}}" />
+    
+    </div>
+    <div style="clear:both"></div>
+    
+     
+    
+   
+    </ion-item>
     </ion-item>
   </ion-list>

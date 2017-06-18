@@ -7,6 +7,7 @@ import { Rede } from '../../classes/Rede';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { DataService } from '../../services/data-service';
+import { Utils } from '../../classes/utils';
 
 
 declare var google;
@@ -33,6 +34,7 @@ export class MapaView {
               public geolocation: Geolocation, 
               public network: Network, 
               public http: Http,
+              private utils: Utils,
               private db: DataService) {
       this.estabelecimentos = [];
       this.infowindow = [];
@@ -109,18 +111,10 @@ export class MapaView {
           redes.forEach(rede => {
             this.db.getEstabelecimentos(rede.key).subscribe(stabs => {
               stabs.forEach(stab => {
-                  let tmpestab = new Estabelecimento();
-                  tmpestab.setId(stab.key);
-                  tmpestab.dados.setNome(stab.val().nome);
-                  tmpestab.dados.setEstado(stab.val().estado);
-                  tmpestab.dados.setCidade(stab.val().cidade);
-                  tmpestab.dados.setBairro(stab.val().bairro);
-                  tmpestab.dados.setLogradouro(stab.val().logradouro);
-                  tmpestab.dados.setNumero(stab.val().numero);
-                  tmpestab.dados.setHorarioFuncionamento(stab.val().horario_funcionamento);
-                  tmpestab.dados.setLat(stab.val().latitude);
-                  tmpestab.dados.setLng(stab.val().longitude);
-                  this.estabelecimentos.push(tmpestab);
+                  let tmpEstab = new Estabelecimento();
+                  tmpEstab.key = stab.key;
+                  this.utils.mergeObj(stab.val(), tmpEstab); // aqui copiamos os dados do bd para nosso objeto local
+                  this.estabelecimentos.push(tmpEstab);
               });  
             this.addMarker();
             });
@@ -132,7 +126,7 @@ export class MapaView {
   // Adiciona marcadores ao mapa para cada estabelecimento
   addMarker() {
     this.estabelecimentos.forEach((estab, index) => {
-      let latLng = new google.maps.LatLng(estab.dados.getLat(), estab.dados.getLng());
+      let latLng = new google.maps.LatLng(estab.latitude, estab.longitude);
       let tmpmarker = new google.maps.Marker({
         map: this.map,
         icon: 'assets/icon/cardappio.png',
@@ -142,16 +136,15 @@ export class MapaView {
       this.marker.push(tmpmarker);
 
       /* TODO: ver uma forma de usar template para o infowindow depois */
-      let desc = estab.dados.getNome();
-      console.log("Geos: " + this.latUsuario + "/" + this.lngUsuario +"/"+ estab.dados.getLat() +"/"+ estab.dados.getLng());
-      let dist = this.calcdist(this.latUsuario, this.lngUsuario, estab.dados.getLat(), estab.dados.getLng());
+      let desc = estab.nome;
+      let dist = this.utils.calcdist(this.latUsuario, this.lngUsuario, estab.latitude, estab.longitude);
       let content =   "<div id=\"infowindow\"><h3>" + 
                       desc + 
                       "<br></h3>À " + 
                       dist + 
                       " metros<div id=\"ifowindowsbuttons\"><img src=\"assets/icon/cardappio.png\">" +
                       "<br> Funcionamento: " + 
-                      estab.dados.getHorarioFuncionamento() + 
+                      estab.horario_funcionamento + 
                       "</div></div>";       
               
       let tmpinfowindow = new google.maps.InfoWindow({
@@ -169,9 +162,9 @@ export class MapaView {
 
   tracarota(){
     if(this.keyEstAtivo > -1){ // gambiarra feiona, tem que consertar mas não consegui um jeito ainda
-        let latDest = this.estabelecimentos[this.keyEstAtivo].dados.getLat();
-        let lngDest = this.estabelecimentos[this.keyEstAtivo].dados.getLng();
-        let nome = this.estabelecimentos[this.keyEstAtivo].dados.getNome();
+        let latDest = this.estabelecimentos[this.keyEstAtivo].latitude;
+        let lngDest = this.estabelecimentos[this.keyEstAtivo].longitude;
+        let nome = this.estabelecimentos[this.keyEstAtivo].nome;
         let label = encodeURI(nome.toString()); // encode the label!
         window.open('geo:'+ latDest +', ' + lngDest +'?q='+ latDest +', ' + lngDest + '(' + label + ')', '_system');
         
@@ -182,28 +175,7 @@ export class MapaView {
 
   // Métodos auxiliares
 
-  // Converte Graus para Radiano
-  degreesToRadians(degrees) {
-    return degrees * Math.PI / 180;
-  }
-
-  // Calcula distância
-  calcdist(lat1, lng1, lat2, lng2) {
-    var earthRadiusKm = 6371;
-
-    var dLat = this.degreesToRadians(lat2-lat1);
-    var dLng = this.degreesToRadians(lng2-lng1);
-
-    lat1 = this.degreesToRadians(lat1);
-    lat2 = this.degreesToRadians(lat2);
-
-    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.sin(dLng/2) * Math.sin(dLng/2) * Math.cos(lat1) * Math.cos(lat2); 
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-
-    // retorno em metros
-    return (earthRadiusKm * c * 1000).toFixed(0);
-  }
+  
 
   // TODO: Separar em uma classe, pois deve ser usado em vários locais
   showAlert() {

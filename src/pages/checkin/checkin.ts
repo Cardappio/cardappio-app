@@ -3,6 +3,8 @@ import { NavController, AlertController } from 'ionic-angular';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { DataService } from '../../services/data-service';
 import { Estabelecimento } from '../../classes/estabelecimento';
+import { EstabelecimentoDetails } from '../estabelecimento-details/estabelecimento-details';
+import { Utils } from '../../classes/utils';
 
 @Component({
   selector: 'page-checkin',
@@ -17,92 +19,47 @@ export class CheckinPage {
   constructor(public navCtrl: NavController, 
   public bcScan: BarcodeScanner, 
   private db: DataService,
+  private utils: Utils,
   public alertCtrl: AlertController) {
       this.myImage = []; 
       this.estabelecimentos = [];
   }
   ionViewDidLoad(){
-    this.lerqrcode(true);
-    
+    this.lerqrcode(); // funcionamento no celular
+    // 
+    //this.checkin("-Kmb0HALJ0J_DyYuD3Fe", "-Kmb1KBfT2UMdU6oPhyG"); // para teste no desktop
+
   }
 
   /*
-  Aqui o código deve estar no formado x_y, onde x é o identificador do estabelecimento, e y é o identificador da mesa
+  Aqui o código deve estar no formado x__y, onde x é o identificador do estabelecimento, e y é o identificador da mesa
   verificar a compatibilidade com os ddos retornados do firebase
   */
 
-  lerqrcode(checkin:boolean){
+  lerqrcode(){
       let dados: any;
         this.bcScan.scan().then((barcodeData) => {
             dados = barcodeData.text;
             // criar teste para checar a integridade dos dados antes de enviar para o checkin
-            if(checkin){
-              this.checkin(dados.split("_")[0], dados.split("_")[1]);
-            }else{
-              this.checkout(dados.split("_")[0], dados.split("_")[1]);
-            }
+              this.checkin(dados.split("__")[0], dados.split("__")[1], dados.split("__")[0],);
         }, (err) => {
             console.log("Erro: " + err);
         });
   }
-  checkin(estab: string, mesa: string){
-    this.showAlert(estab, mesa); // debug apenas
+  checkin(rede: string, estab: string, mesa: string){
+    let estabelecimentoescolhido = this.db.getEstabelecimento(estab);
+    let tmpStab = new Estabelecimento();
+    this.utils.mergeObj(estabelecimentoescolhido, tmpStab);
     this.db.updateMesa(estab, mesa, "aguardando");
+    this.showOptions(tmpStab, estab, mesa);
     // TODO: enviar dados para o servidor
     // TODO: solicitar aprovacao do gerente
     
   }
+  showOptions(estabelecimento, estabKey, idmesa){
+    this.navCtrl.push(EstabelecimentoDetails, {estabelecimento, estabKey, idmesa});
+  }
   checkout(estab: string, mesa: string){
     this.db.updateMesa(estab, mesa, "livre");
   }
-  
-  /*
-  Apenas para debug, mas pode ser aproveitado no futuro
-  */
-  showAlert(estab: string, mesa: string) {
-    let confirm = this.alertCtrl.create({
-        title: 'CheckIn',
-        message: 'Efetuando CheckIn na mesa ' + mesa + ' do ' + estab,
-        buttons: [
-          {
-            text: 'OK',
-            handler: () => {
-              /* fazer algo */
-            }
-          }
-        ]
-      });
-      confirm.present();
-  }
- 
-
- /* acho que dá pra gente criar aqui uma função pra gerar as imagens do QR code, 
-  a principio elas seriam geradas por este api aí embaixo, logicamente isso deve estar diponível no
-  modulo do administrador
-  */
-  qrcodegen(){
-   this.db.setLimit(6);
-   this.db.getRedes().subscribe(redes => {
-          redes.forEach(rede => {
-            this.db.getEstabelecimentos(rede.key).subscribe(stabs => {
-              stabs.forEach(stab => {
-                  let mesas = stab.val().mesas; 
-
-                  for(let key in mesas){
-                      let mesa = stab.val().mesas[key];
-                      let cor: string;
-                      if(mesa.status === "livre"){
-                          cor = "000000";
-                      }else{
-                          cor = "0000ff";
-                      }
-                      this.myImage.push('https://api.qrserver.com/v1/create-qr-code/?size=150x150&color='+cor+'&data='+stab.key+'_'+key);
-                  }
-              });
-            });
-          });
-   });
- 
-  }
-
 }

@@ -27,6 +27,9 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { HttpModule} from '@angular/http';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
+//utils
+import { Utils } from '../classes/utils';
+
 // AF2 Settings
 export const firebaseConfig = {
   apiKey: "AIzaSyCcAlOaliIlgSVnz-KoUkZOG9xbRybpqX4",
@@ -73,6 +76,7 @@ export const firebaseConfig = {
     BarcodeScanner,
     DataService,
     Geolocation,
+    Utils,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
