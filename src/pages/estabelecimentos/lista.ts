@@ -62,9 +62,9 @@ export class ListaView {
         redes.forEach(rede => { // varre todas as redes
           /* retorna array de estabelecimentos do bd, de acordo com o key da rede */
           let tmpRede = new Rede();
-          tmpRede.key = rede.kek;
-          tmpRede.nome = rede.nome;
-          this.db.setLimit(1); 
+          tmpRede.key = rede.key;
+          tmpRede.nome = rede.val().nome;
+          this.db.setLimit(1); // Mudar valor do Limit
           this.db.getEstabelecimentos(rede.key).subscribe( estabelecimentos => { 
               estabelecimentos.forEach(estabelecimento => { // varre todos os estabelecimentos
                   let tmpEstab = new Estabelecimento();
