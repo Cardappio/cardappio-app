@@ -1,15 +1,13 @@
 view-mapa {
     #map{
         position: relative;
-        margin-top: 11rem;
         height: 100%;
         width: 100%;
     }
 
     .map-search ion-searchbar {
         width: 100%;
-        margin-top: 11rem;
-        top: 0;
+        /* top: 0; */
     }
 
 }
