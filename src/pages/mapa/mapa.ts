@@ -12,10 +12,10 @@ import { Utils } from '../../classes/utils';
 
 declare var google;
 @Component({
-  selector: 'view-mapa',
+  selector: 'page-mapa',
   templateUrl: 'mapa.html'
 })
-export class MapaView {
+export class MapaPage {
 
   @ViewChild('map') mapElement;
   private map: any;

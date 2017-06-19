@@ -5,13 +5,12 @@ import { MyApp } from './app.component';
 import { SuperTabsModule } from 'ionic2-super-tabs';
 
 // Pages
-import { CheckinPage } from '../pages/checkin/checkin';
 import { TabsPage } from '../pages/tabs/tabs';
 import { HomePage } from '../pages/home/home';
-import { EstabelecimentosPage } from '../pages/estabelecimentos/estabelecimentos';
-import { EstabelecimentoDetails } from '../pages/estabelecimento-details/estabelecimento-details';
-import { MapaView } from '../pages/estabelecimentos/mapa';
-import { ListaView } from '../pages/estabelecimentos/lista';
+import { EstabelecimentosModule } from '../pages/estabelecimentos/estabelecimentos.module';
+import { EstabelecimentoDetailsModule } from '../pages/estabelecimento-details/estabelecimento-details.module';
+import { CheckinModule } from '../pages/checkin/checkin.module';
+import { MapaModule } from '../pages/mapa/mapa.module';
 
 // Import the AF2 Modules
 import { AngularFireModule } from 'angularfire2';
@@ -42,18 +41,17 @@ export const firebaseConfig = {
 @NgModule({
   declarations: [
     MyApp,
-    CheckinPage,
     TabsPage,
-    HomePage,
-    EstabelecimentoDetails,
-    EstabelecimentosPage,
-    MapaView,
-    ListaView
+    HomePage
   ],
   imports: [
     BrowserModule,
     HttpModule,
     IonicModule.forRoot(MyApp),
+    MapaModule,
+    EstabelecimentosModule,
+    EstabelecimentoDetailsModule,
+    CheckinModule,
     SuperTabsModule.forRoot(),
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule
@@ -61,13 +59,8 @@ export const firebaseConfig = {
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    CheckinPage,
     TabsPage,
-    HomePage,
-    EstabelecimentoDetails,
-    EstabelecimentosPage,
-    MapaView,
-    ListaView
+    HomePage
   ],
   providers: [
     StatusBar,
