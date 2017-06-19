@@ -1,12 +1,16 @@
 <ion-header>
   <ion-navbar color=primary>
     <ion-title>Estabelecimentos</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only>
+        <ion-icon *ngIf="!toggledSearch" (click)="toggleSearch()" name="search"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
   <ion-searchbar placeholder="Pesquise..." (ionInput)="pesquisar($event)"></ion-searchbar>
-
   <ion-list>
       <ng-template ngFor let-estabelecimento [ngForOf]="estabArray" >
         <ion-item (click)="showOptions(estabelecimento, estabelecimento.key)" >

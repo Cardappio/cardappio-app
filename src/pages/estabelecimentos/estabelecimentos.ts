@@ -14,16 +14,23 @@ import { Utils } from '../../classes/utils';
 })
 export class EstabelecimentosPage {
 
+  toggledSearch: boolean;
+
   estabArray: Array<any>;
   originalEstabArray: Array<any>;
 
-  constructor(public navCtrl: NavController,  private db: DataService, private utils: Utils  /*public db: AngularFireDatabase*/) {
+  constructor(public navCtrl: NavController,  private db: DataService, private utils: Utils) {
+    this.toggledSearch = false;
     this.estabArray = new Array;
     this.originalEstabArray = new Array;
   }
 
   ngOnInit() {
     this.iniciarEstabelecimentos();
+  }
+
+  toggleSearch() {
+    this.toggledSearch = this.toggledSearch ? false : true;
   }
 
   iniciarEstabelecimentos(){
