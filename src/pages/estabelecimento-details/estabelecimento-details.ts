@@ -14,7 +14,7 @@ import { Utils } from '../../classes/utils';
 })
 export class EstabelecimentoDetails {
 
-   mesaescolhida: Mesa;
+   //mesaescolhida: Mesa;
    estabelecimento: Estabelecimento;
    estabKey: string;
    produtosArray: Array<any>;
@@ -25,17 +25,19 @@ export class EstabelecimentoDetails {
     this.idmesa = navParams.get('idmesa');
     this.produtosArray = new Array;
     this.estabelecimento = new Estabelecimento();
-    this.mesaescolhida = new Mesa();
+    //this.mesaescolhida = new Mesa();
   }
+
   ionViewDidLoad(){ // espera carregar a view
-    this.iniciarCadapios(); 
+    this.iniciarCardapios(); 
   }
-  iniciarCadapios(){
-    this.db.object('/mesas/'+this.estabKey+'/'+this.idmesa).subscribe( mesa => {
-          this.mesaescolhida = mesa;
-    });
+
+  iniciarCardapios(){
+    // this.db.object('/mesas/'+this.estabKey+'/'+this.idmesa).subscribe( mesa => {
+    //       this.mesaescolhida = mesa;
+    // });
    
-   this.db.object('/estabelecimentos/-Kmb-c0vLJkXbLdaEXmk/'+this.estabKey).subscribe( estab => {
+    this.db.object('/estabelecimentos/-Kmb-c0vLJkXbLdaEXmk/'+this.estabKey).subscribe( estab => {
       this.estabelecimento = estab;
       console.log(this.estabelecimento);
     });

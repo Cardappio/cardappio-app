@@ -1,8 +1,7 @@
   <ion-searchbar placeholder="Pesquise..." (ionInput)="pesquisar($event)"></ion-searchbar>
 
   <ion-list>
-    <ng-template ngFor let-rede [ngForOf]="redes" >
-      <ng-template ngFor let-estabelecimento [ngForOf]="rede.estabelecimentos" >
+      <ng-template ngFor let-estabelecimento [ngForOf]="estabArray" >
         <ion-item (click)="showOptions(estabelecimento, estabelecimento.key)" >
           <ion-avatar item-start>
             <img [src]=estabelecimento.imgURL>
@@ -18,5 +17,4 @@
         <div style="clear:both"></div>
         </ion-item>
       </ng-template>
-    </ng-template>
   </ion-list>

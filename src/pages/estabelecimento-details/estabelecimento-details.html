@@ -8,37 +8,37 @@
 <ion-content padding>
 
 
-<ion-card>
+<ion-card class="img-card">
+    <img [src]="estabelecimento.imgURL"/>
 
-    <img [src]="estabelecimento.imgURL" id ="imgCardapioEst" width="200px" />
-
-    <ion-card-content>
+    <ion-card-content class="content-card">
       <ion-card-title>
         {{estabelecimento.nome}}
       </ion-card-title> 
       <p>{{estabelecimento.tipo}}</p>
       <p> Tel.:{{estabelecimento.telefone}}</p>
     </ion-card-content>
+</ion-card>
 
-  </ion-card>
-  <ion-card>
+<!--<ion-card>
   <ion-card-content>
       <ion-card-title>
         Status da reserva
       </ion-card-title> 
       <p>Mesa {{mesaescolhida?.numero}} está {{mesaescolhida?.status}}</p>
     </ion-card-content>
-    </ion-card>
+</ion-card>-->
+
 <div class="scrollbar" id="style-1">
   <ion-list>
-  <ion-item *ngFor="let produto of produtosArray" >
-    <ion-thumbnail item-start>
-      <img [src]="produto.val().imagemURL" width="200px">
-    </ion-thumbnail>
-    <h2>{{produto.val().nome}}</h2>
-    <p>{{produto.val().descricao}}</p>
-    <button ion-button clear item-end>R${{produto.val().preco}}</button>
-  </ion-item>
-</ion-list>
+    <ion-item *ngFor="let produto of produtosArray" >
+      <ion-thumbnail item-start>
+        <img [src]="produto.val().imagemURL" width="200px">
+      </ion-thumbnail>
+      <h2>{{produto.val().nome}}</h2>
+      <p>{{produto.val().descricao}}</p>
+      <button ion-button clear item-end>R${{produto.val().preco}}</button>
+    </ion-item>
+  </ion-list>
 </div>
 

@@ -4,7 +4,6 @@ import { NavController } from 'ionic-angular';
 //import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 import { DataService } from '../../services/data-service';
 import { EstabelecimentoDetails } from '../estabelecimento-details/estabelecimento-details';
-import { Rede } from '../../classes/Rede';
 import { Estabelecimento } from '../../classes/estabelecimento';
 import { Mesa } from '../../classes/mesa';
 import { Utils } from '../../classes/utils';
@@ -15,55 +14,24 @@ import { Utils } from '../../classes/utils';
 })
 export class ListaView {
 
-
- // estabelecimentos: FirebaseListObservable<any[]>;  // mudei para nossa classe local
   estabArray: Array<any>;
   originalEstabArray: Array<any>;
-  private estabelecimentos: Estabelecimento[];
-  private redes: Rede[];
 
   constructor(public navCtrl: NavController,  private db: DataService, private utils: Utils  /*public db: AngularFireDatabase*/) {
-    //this.estabelecimentos = db.list('/estabelecimentos');
     this.estabArray = new Array;
     this.originalEstabArray = new Array;
-    this.redes = new Array;
-    this.estabelecimentos = new Array;
+  }
+
+  ngOnInit() {
     this.iniciarEstabelecimentos();
-    this.estabArray = this.originalEstabArray;
   }
-
-  /*
-  iniciarEstabelecimentos(){
-    this.getDB('/estabelecimentos').subscribe( snapshot => {
-      snapshot.forEach(redes => {
-        this.getDB('/estabelecimentos/'+redes.key).subscribe(estabelecimento =>{
-          estabelecimento.forEach(dados => {
-            console.log(dados);
-            this.originalEstabArray.push(dados);
-          });
-        });
-      });
-    });
-  }
-  
-
-  getDB(url: string): FirebaseListObservable<any>{
-    return this.db.list(url, {preserveSnapshot: true});
-  }
-*/
-  /*
-  Felipe, fiz aqui algumas alterações na tua função original, porque estávamos usando a 
-  função da classe data-service nas outras pages, se quiser reverter, fica à vontade
-  */
 
   iniciarEstabelecimentos(){
     this.db.setLimit(10); 
     this.db.getRedes().subscribe( redes => {  // retorna array de redes do bd
         redes.forEach(rede => { // varre todas as redes
           /* retorna array de estabelecimentos do bd, de acordo com o key da rede */
-          let tmpRede = new Rede();
-          tmpRede.key = rede.key;
-          tmpRede.nome = rede.val().nome;
+          let tmpRedeKey = rede.key;
           this.db.setLimit(1); // Mudar valor do Limit
           this.db.getEstabelecimentos(rede.key).subscribe( estabelecimentos => { 
               estabelecimentos.forEach(estabelecimento => { // varre todos os estabelecimentos
@@ -72,16 +40,12 @@ export class ListaView {
                   tmpEstab.mesas = tmpMesas;
                   tmpEstab.key = estabelecimento.key;
                   this.utils.mergeObj(estabelecimento.val(), tmpEstab); // copia o objeto remoto para o local
-                  tmpRede.estabelecimentos.push(tmpEstab);
+                  this.originalEstabArray.push(tmpEstab); // inserimos no array de estabelecimentos (usado para fins de pesquisa)
               });
               
           });
-          console.log("Tmp Rede: " + tmpRede);
-          this.redes.push(tmpRede);
         });
-        this.estabArray = this.estabelecimentos;
-        console.log(this.redes);
-        
+        this.estabArray = this.originalEstabArray;       
    });
   }
 
@@ -107,22 +71,17 @@ export class ListaView {
 
   pesquisar(nome){
     let term: string = nome.target.value || '';
-    console.log(term);
     if (term.trim() === '' || term.trim().length < 3){
-      this.estabArray = this.estabelecimentos;
+      this.estabArray = this.originalEstabArray;
     }else{
       this.estabArray = [];
-      this.redes.forEach(rede => {
-        rede.estabelecimentos.forEach(estab => {
-            let aux: string = estab.nome;
-            if( aux.toLowerCase().includes(term.toLowerCase())){
-              this.estabArray.push(estab);
-            }
-        });
+      this.originalEstabArray.forEach(element => {
+          let aux: string = element.nome;
+          if( aux.toLowerCase().includes(term.toLowerCase())){
+            this.estabArray.push(element);
+           }
       });
-
     }
-
   }
 
 }
