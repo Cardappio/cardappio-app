@@ -1,4 +1,5 @@
 import {Mesa} from './mesa';
+import {Cardapio} from './cardapio';
 export class Estabelecimento{
     key: string;
     bairro: string;
@@ -15,11 +16,12 @@ export class Estabelecimento{
     telefone: string;
     tipo: string;
     mesas: Mesa[];
+    cardapios: Cardapio[];
     constructor() {
       this.key = ""; this.bairro = ""; this.cidade = ""; this.descricao = ""; this.estado = "";
       this.horario_funcionamento = ""; this.imgURL = ""; this.latitude = ""; this.longitude = "";
       this.nome = ""; this.numero = ""; this.telefone = ""; this.tipo = ""; this.logradouro = "";
-      this.mesas = [];
+      this.mesas = []; this.cardapios = [];
     }
 
     getId(){

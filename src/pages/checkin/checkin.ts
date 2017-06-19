@@ -25,17 +25,18 @@ export class CheckinPage {
       this.estabelecimentos = [];
   }
   ionViewDidLoad(){
-    this.lerqrcode(); // funcionamento no celular
+    //this.lerqrcode(); // funcionamento no celular
     // 
-    //this.checkin("-Kmb0HALJ0J_DyYuD3Fe", "-Kmb1KBfT2UMdU6oPhyG"); // para teste no desktop
+    this.checkin("-Kmb0HALJ0J_DyYuD3Fe", "-Kmb0HALJ0J_DyYuD3Fe", "-Kmb1KBfT2UMdU6oPhyG"); // para teste no desktop
 
   }
 
   /*
-  Aqui o código deve estar no formado x__y, onde x é o identificador do estabelecimento, e y é o identificador da mesa
-  verificar a compatibilidade com os ddos retornados do firebase
+  Aqui o código deve estar no formado x__y__z, onde:
+  x identifica a rede de estabelecimentos
+  y identifica o estabelecimento dentro da rede
+  z identifica a mesa dentro do estabelecimento
   */
-
   lerqrcode(){
       let dados: any;
         this.bcScan.scan().then((barcodeData) => {
@@ -47,19 +48,13 @@ export class CheckinPage {
         });
   }
   checkin(rede: string, estab: string, mesa: string){
-    let estabelecimentoescolhido = this.db.getEstabelecimento(estab);
-    let tmpStab = new Estabelecimento();
-    this.utils.mergeObj(estabelecimentoescolhido, tmpStab);
     this.db.updateMesa(estab, mesa, "aguardando");
-    this.showOptions(tmpStab, estab, mesa);
+    this.showOptions(rede, estab, mesa);
     // TODO: enviar dados para o servidor
     // TODO: solicitar aprovacao do gerente
     
   }
-  showOptions(estabelecimento, estabKey, idmesa){
-    this.navCtrl.push(EstabelecimentoDetails, {estabelecimento, estabKey, idmesa});
-  }
-  checkout(estab: string, mesa: string){
-    this.db.updateMesa(estab, mesa, "livre");
+  showOptions(redeKey, stabKey, mesaKey){
+    this.navCtrl.push(EstabelecimentoDetails, {redeKey, stabKey, mesaKey});
   }
 }
