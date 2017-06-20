@@ -19,7 +19,8 @@ export class PopoverPage {
       this.mesa = this.navParams.data.mesa;
       this.estab = this.navParams.data.estab;
       console.log(this.mesa);
-      console.log(this.estab);
+      console.log(this.estab
+      );
     }
   }
 
