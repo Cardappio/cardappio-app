@@ -14,13 +14,13 @@ import { Utils } from '../../classes/utils';
 })
 export class EstabelecimentosPage {
 
-  toggledSearch: boolean;
-
+  
+  public toggled: boolean;
   estabArray: Array<any>;
   originalEstabArray: Array<any>;
 
   constructor(public navCtrl: NavController,  private db: DataService, private utils: Utils) {
-    this.toggledSearch = false;
+    this.toggled = false;
     this.estabArray = new Array;
     this.originalEstabArray = new Array;
   }
@@ -30,7 +30,8 @@ export class EstabelecimentosPage {
   }
 
   toggleSearch() {
-    this.toggledSearch = this.toggledSearch ? false : true;
+       this.toggled = this.toggled ? false : true;
+       this.estabArray = this.originalEstabArray;
   }
 
   iniciarEstabelecimentos(){
@@ -73,6 +74,9 @@ export class EstabelecimentosPage {
   }
 
   showOptions(estabelecimento, estabKey){
+    //Fecha pesquisa após selecionar estabelecimento
+    if(this.toggled)
+      this.toggleSearch();
     this.navCtrl.push(EstabelecimentoDetails, {estabelecimento, estabKey});
   }
 
