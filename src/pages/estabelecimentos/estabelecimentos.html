@@ -22,21 +22,23 @@
 
 <ion-content padding>
   <ion-list>
-      <ng-template ngFor let-estabelecimento [ngForOf]="estabArray" >
-        <ion-item (click)="showOptions(estabelecimento, estabelecimento.key)" >
-          <ion-avatar item-start>
-            <img [src]=estabelecimento.imgURL>
-          </ion-avatar>
-          <h2>{{estabelecimento.nome}}</h2>
-          <p>{{estabelecimento.logradouro}}, {{estabelecimento.numero}} - {{estabelecimento.bairro}}</p>
-          <!-- QR para debugs e uso no checkin, excluir esse campo depois -->  
-          <!--<div *ngFor="let mesa of estabelecimento.mesas" class="qr">
-              <h2>Mesa {{mesa.numero}} - {{mesa.status}}</h2><br>
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{estabelecimento.key}}__{{mesa.key}}" />
-          
-          </div>-->
-        <div style="clear:both"></div>
-        </ion-item>
+      <ng-template ngFor let-rede [ngForOf]="redeArray" >
+        <ng-template ngFor let-estabelecimento [ngForOf]="rede.estabelecimentos" >
+          <ion-item (click)="showOptions(rede.key, estabelecimento.key)" >
+            <ion-avatar item-start>
+              <img [src]=estabelecimento.imgURL>
+            </ion-avatar>
+            <h2>{{estabelecimento.nome}}</h2>
+            <p>{{estabelecimento.logradouro}}, {{estabelecimento.numero}} - {{estabelecimento.bairro}}</p>
+            <!-- QR para debugs e uso no checkin, excluir esse campo depois -->  
+            <!--<div *ngFor="let mesa of estabelecimento.mesas" class="qr">
+                <h2>Mesa {{mesa.numero}} - {{mesa.status}}</h2><br>
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{estabelecimento.key}}__{{mesa.key}}" />
+            
+            </div>-->
+          <div style="clear:both"></div>
+          </ion-item>
+        </ng-template>
       </ng-template>
   </ion-list>
 <ion-content>

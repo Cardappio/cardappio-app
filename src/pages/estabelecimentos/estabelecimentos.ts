@@ -4,6 +4,7 @@ import { NavController } from 'ionic-angular';
 //import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 import { DataService } from '../../services/data-service';
 import { EstabelecimentoDetails } from '../estabelecimento-details/estabelecimento-details';
+import { Rede } from '../../classes/Rede';
 import { Estabelecimento } from '../../classes/estabelecimento';
 import { Mesa } from '../../classes/mesa';
 import { Utils } from '../../classes/utils';
@@ -16,13 +17,13 @@ export class EstabelecimentosPage {
 
   
   public toggled: boolean;
-  estabArray: Array<any>;
-  originalEstabArray: Array<any>;
+  redeArray: Rede[];
+  originalRedeArray: Rede[];
 
   constructor(public navCtrl: NavController,  private db: DataService, private utils: Utils) {
     this.toggled = false;
-    this.estabArray = new Array;
-    this.originalEstabArray = new Array;
+    this.redeArray = [];
+    this.originalRedeArray = [];
   }
 
   ngOnInit() {
@@ -31,16 +32,17 @@ export class EstabelecimentosPage {
 
   toggleSearch() {
        this.toggled = this.toggled ? false : true;
-       this.estabArray = this.originalEstabArray;
+       this.redeArray = this.originalRedeArray;
   }
 
   iniciarEstabelecimentos(){
     this.db.setLimit(10); 
     this.db.getRedes().subscribe( redes => {  // retorna array de redes do bd
         redes.forEach(rede => { // varre todas as redes
+          let tmpRede = new Rede();
           /* retorna array de estabelecimentos do bd, de acordo com o key da rede */
-          let tmpRedeKey = rede.key;
-          this.db.setLimit(1); // Mudar valor do Limit
+          tmpRede.key = rede.key;
+          this.db.setLimit(3); // Mudar valor do Limit
           this.db.getEstabelecimentos(rede.key).subscribe( estabelecimentos => { 
               estabelecimentos.forEach(estabelecimento => { // varre todos os estabelecimentos
                   let tmpEstab = new Estabelecimento();
@@ -48,12 +50,14 @@ export class EstabelecimentosPage {
                   tmpEstab.mesas = tmpMesas;
                   tmpEstab.key = estabelecimento.key;
                   this.utils.mergeObj(estabelecimento.val(), tmpEstab); // copia o objeto remoto para o local
-                  this.originalEstabArray.push(tmpEstab); // inserimos no array de estabelecimentos (usado para fins de pesquisa)
+                  tmpRede.estabelecimentos.push(tmpEstab);
+                  //this.originalEstabArray.push(tmpEstab); // inserimos no array de estabelecimentos (usado para fins de pesquisa)
               });
               
+              this.originalRedeArray.push(tmpRede);
           });
         });
-        this.estabArray = this.originalEstabArray;       
+        this.redeArray = this.originalRedeArray;       
    });
   }
 
@@ -73,24 +77,28 @@ export class EstabelecimentosPage {
       return mesasArrayTmp;
   }
 
-  showOptions(estabelecimento, estabKey){
+  showOptions(redeKey, estabKey){
     //Fecha pesquisa após selecionar estabelecimento
     if(this.toggled)
       this.toggleSearch();
-    this.navCtrl.push(EstabelecimentoDetails, {estabelecimento, estabKey});
+    this.navCtrl.push(EstabelecimentoDetails, {redeKey, estabKey});
   }
 
   pesquisar(nome){
     let term: string = nome.target.value || '';
     if (term.trim() === '' || term.trim().length < 3){
-      this.estabArray = this.originalEstabArray;
+      this.redeArray = this.originalRedeArray;
     }else{
-      this.estabArray = [];
-      this.originalEstabArray.forEach(element => {
-          let aux: string = element.nome;
-          if( aux.toLowerCase().includes(term.toLowerCase())){
-            this.estabArray.push(element);
-           }
+      this.redeArray = [];  // limpa o array de redes
+      this.originalRedeArray.forEach(rede => {
+          let tmpRede = new Rede(); // rede temporaria para armazenar apenas as buscadas
+          rede.estabelecimentos.forEach(estab => {
+            let aux: string = estab.nome;
+            if( aux.toLowerCase().includes(term.toLowerCase())){
+                tmpRede.estabelecimentos.push(estab); // checa o nome do estabelecimento e adiciona na rede temporaria
+            }
+          });
+          this.redeArray.push(tmpRede); // adiciona a rede temporaria no array a ser impresso
       });
     }
   }

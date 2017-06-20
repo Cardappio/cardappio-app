@@ -11,6 +11,7 @@ import { EstabelecimentosModule } from '../pages/estabelecimentos/estabeleciment
 import { EstabelecimentoDetailsModule } from '../pages/estabelecimento-details/estabelecimento-details.module';
 import { CheckinModule } from '../pages/checkin/checkin.module';
 import { MapaModule } from '../pages/mapa/mapa.module';
+import { PopoverPage } from '../pages/estabelecimento-details/popover';
 
 // Import the AF2 Modules
 import { AngularFireModule } from 'angularfire2';
@@ -42,7 +43,8 @@ export const firebaseConfig = {
   declarations: [
     MyApp,
     TabsPage,
-    HomePage
+    HomePage,
+    PopoverPage
   ],
   imports: [
     BrowserModule,
@@ -60,7 +62,8 @@ export const firebaseConfig = {
   entryComponents: [
     MyApp,
     TabsPage,
-    HomePage
+    HomePage,
+    PopoverPage  
   ],
   providers: [
     StatusBar,

@@ -27,7 +27,7 @@ export class CheckinPage {
   ionViewDidLoad(){
     //this.lerqrcode(); // funcionamento no celular
     // 
-    this.checkin("-Kmb0HALJ0J_DyYuD3Fe", "-Kmb0HALJ0J_DyYuD3Fe", "-Kmb1KBfT2UMdU6oPhyG"); // para teste no desktop
+    this.checkin("-Kmb-c0vLJkXbLdaEXmk", "-Kmb0HALJ0J_DyYuD3Fe", "-Kmb1KBfT2UMdU6oPhyG"); // para teste no desktop
 
   }
 
@@ -54,7 +54,7 @@ export class CheckinPage {
     // TODO: solicitar aprovacao do gerente
     
   }
-  showOptions(redeKey, stabKey, mesaKey){
-    this.navCtrl.push(EstabelecimentoDetails, {redeKey, stabKey, mesaKey});
+  showOptions(redeKey, estabKey, mesaKey){
+    this.navCtrl.push(EstabelecimentoDetails, {redeKey, estabKey, mesaKey});
   }
 }

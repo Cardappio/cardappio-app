@@ -1,14 +1,16 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Component, ViewChild, ElementRef  } from '@angular/core';
+import { IonicPage, NavController, NavParams, PopoverController } from 'ionic-angular';
 
 import { FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database';
 import { AngularFireDatabase } from 'angularfire2/database';
+import { PopoverPage } from './popover';
 import { Estabelecimento } from '../../classes/estabelecimento';
 import { Mesa } from '../../classes/mesa';
 import { Cardapio } from '../../classes/cardapio';
 import { CategoriaCardapio } from '../../classes/categoriacardapio';
 import { Produto } from '../../classes/produto';
 import { Utils } from '../../classes/utils';
+
 
 
 @Component({
@@ -21,27 +23,46 @@ export class EstabelecimentoDetails {
    estabelecimento: Estabelecimento;
    estabKey: string;
    redeKey: string;
-   produtosArray: Array<any>;
    mesaKey: string;
+   produtosArray: Array<any>;
    
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public db: AngularFireDatabase, private utils: Utils) {
-    this.estabKey = navParams.get('estabKey');
-    this.mesaKey = navParams.get('mesaKey');
-    this.redeKey = navParams.get('redeKey');
-    this.produtosArray = new Array;
-    this.estabelecimento = new Estabelecimento();
-    this.mesaescolhida = new Mesa();
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public popoverCtrl: PopoverController, 
+    public db: AngularFireDatabase, 
+    private utils: Utils) {
+      this.estabKey = navParams.get('estabKey');
+      this.mesaKey = navParams.get('mesaKey');
+      this.redeKey = navParams.get('redeKey');
+      this.produtosArray = new Array;
+      this.estabelecimento = new Estabelecimento();
+      this.mesaescolhida = new Mesa();
     
   }
   ionViewDidLoad(){ // espera carregar a view
     this.iniciarCadapios(); 
+    this.mostraStatusMesa();
+  }
+  mostraStatusMesa() {
+    if(this.mesaKey){ // mostra o popupa apenas se tiver o key da mesa, ou seja, se vier da página de check-in
+      this.db.object('/mesas/'+this.estabKey+'/'+this.mesaKey).subscribe( mesa => {
+          this.utils.mergeObj(mesa, this.mesaescolhida); // registrando os dados da mesa para a variaver a ser impressa
+      });
+      this.db.object('/estabelecimentos/'+this.redeKey+'/'+this.estabKey).subscribe( estab => {
+        this.utils.mergeObj(estab, this.estabelecimento);
+      });
+      let popover = this.popoverCtrl.create(PopoverPage, {
+        mesa: this.mesaescolhida,
+        estab: this.estabelecimento
+      });
+      popover.present({
+        //ev: ev
+      });
+    }
   }
   iniciarCadapios(){
-    this.db.object('/mesas/'+this.estabKey+'/'+this.mesaKey).subscribe( mesa => {
-          this.utils.mergeObj(mesa, this.mesaescolhida);
-    });
-   
     this.db.object('/estabelecimentos/'+this.redeKey+'/'+this.estabKey).subscribe( estab => {
         this.utils.mergeObj(estab, this.estabelecimento);
     });
