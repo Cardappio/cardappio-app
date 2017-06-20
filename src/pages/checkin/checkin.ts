@@ -42,7 +42,7 @@ export class CheckinPage {
         this.bcScan.scan().then((barcodeData) => {
             dados = barcodeData.text;
             // criar teste para checar a integridade dos dados antes de enviar para o checkin
-              this.checkin(dados.split("__")[0], dados.split("__")[1], dados.split("__")[0],);
+              this.checkin(dados.split("__")[0], dados.split("__")[1], dados.split("__")[2]);
         }, (err) => {
             console.log("Erro: " + err);
         });

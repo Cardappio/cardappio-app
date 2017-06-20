@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { Geolocation } from '@ionic-native/geolocation';
 // mudei para a nossa classe local
 //import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 import { DataService } from '../../services/data-service';
@@ -15,12 +16,13 @@ import { Utils } from '../../classes/utils';
 })
 export class EstabelecimentosPage {
 
-  
+  latUsuario: any; // para armazenar a posicao
+  lngUsuario: any; // para armazenar a posicao
   public toggled: boolean;
-  redeArray: Rede[];
+  redeArray: Rede[] ;
   originalRedeArray: Rede[];
 
-  constructor(public navCtrl: NavController,  private db: DataService, private utils: Utils) {
+  constructor(public navCtrl: NavController,  private db: DataService, private utils: Utils, public geolocation: Geolocation) {
     this.toggled = false;
     this.redeArray = [];
     this.originalRedeArray = [];
@@ -50,7 +52,7 @@ export class EstabelecimentosPage {
                   tmpEstab.mesas = tmpMesas;
                   tmpEstab.key = estabelecimento.key;
                   this.utils.mergeObj(estabelecimento.val(), tmpEstab); // copia o objeto remoto para o local
-                  tmpRede.estabelecimentos.push(tmpEstab);
+                  tmpRede.estabelecimentos.push(tmpEstab);  // inserimos no array de estabelecimentos (usado para fins de pesquisa)
                   //this.originalEstabArray.push(tmpEstab); // inserimos no array de estabelecimentos (usado para fins de pesquisa)
               });
               
@@ -85,6 +87,7 @@ export class EstabelecimentosPage {
   }
 
   pesquisar(nome){
+    this.aplicaraio(500);
     let term: string = nome.target.value || '';
     if (term.trim() === '' || term.trim().length < 3){
       this.redeArray = this.originalRedeArray;
@@ -103,4 +106,48 @@ export class EstabelecimentosPage {
     }
   }
 
+  /*
+  função aplicaraio(raio: Number) // lembrar de mudar esse nome antes de mostrar pra professora :)
+  pega um valor em metros para o raio, que representa a distancia entre o usuario
+  e o limite, e filtra os estabelecimentos que estiverem a uma distância 
+  maior que este valor.
+  */
+  aplicaraio(raio: Number){
+    this.redeArray = []; // limpa o array padrão para inserir apenas os dados condizentes com os criterios
+    this.originalRedeArray.forEach(rede => {
+      let tmpRede = new Rede(); // rede temporaria para armazenar apenas as que interessam
+      rede.estabelecimentos.forEach( estab => {
+        let dist;
+        if(this.latUsuario || this.lngUsuario){
+            dist = this.utils.calcdist(this.latUsuario, this.lngUsuario, estab.latitude, estab.longitude);
+            console.log("pos registrada");
+        }else{ 
+            /*
+             só chama get position se não tiver registrado ainda a pos do usuario
+             como o geolocation consome muito recurso, avaliar se é melhor armazenar 
+             a pos do usuario em um cache, pra ser usado durante toda a sessão
+            */
+            console.log("pos renovada");
+            this.getPosition();
+            dist = this.utils.calcdist(this.latUsuario, this.lngUsuario, estab.latitude, estab.longitude);
+        }
+          console.log("distancia: " + dist +"/ raio: "+ raio +"/"+this.latUsuario);
+          if(dist <= raio){
+              tmpRede.estabelecimentos.push(estab); // checa o se a distancia é menor ou igual e adiciona ao array temporario
+          }
+        
+      });
+       this.redeArray.push(tmpRede); // adiciona a rede temporaria no array a ser impresso
+    });
+  }
+  getPosition() {
+    this.geolocation.getCurrentPosition()
+        .then((position) => {
+            this.latUsuario = position.coords.latitude;
+            this.lngUsuario = position.coords.longitude
+        }, (err) => {
+            console.log(err);
+            // TODO: Apresentar Alert de erro
+        });
+  }
 }

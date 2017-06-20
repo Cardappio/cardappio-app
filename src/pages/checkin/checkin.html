@@ -5,11 +5,6 @@
 </ion-header>
 
 <ion-content padding>
-  <button (click)="qrcodegen()">Click</button>
-  <div *ngFor="let image of myImage" style="margin:100px; float:left; width:200px;">
-    <img src='{{image}}' />
-  </div>
-
   <button (click)="lerqrcode(true)" style="width:200px; height:30px">CheckIn</button>
-  <button (click)="lerqrcode(false)" style="width:200px; height:30px">CheckOut</button>
+ 
 </ion-content>
