@@ -1,6 +1,7 @@
 <ion-header>
-
+  
   <ion-navbar color="primary">
+      
       <!-- Título -->
       <ion-title *ngIf="!toggled">Estabelecimentos</ion-title>
       <!-- Search Bar -->
@@ -15,7 +16,8 @@
       <!-- Search Icon -->    
       <ion-buttons end *ngIf="!toggled">
         <button ion-button icon-only (click)="toggleSearch()"><ion-icon name="search"></ion-icon></button>
-      </ion-buttons>  
+        <button ion-button icon-only (click)="settings()"><ion-icon name="more"></ion-icon></button>
+      </ion-buttons>
   </ion-navbar>
 
 </ion-header>

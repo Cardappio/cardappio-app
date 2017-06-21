@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, AlertController  } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
 // mudei para a nossa classe local
 //import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
@@ -10,22 +10,26 @@ import { Estabelecimento } from '../../classes/estabelecimento';
 import { Mesa } from '../../classes/mesa';
 import { Utils } from '../../classes/utils';
 
+
 @Component({
   selector: 'page-estabelecimentos',
   templateUrl: 'estabelecimentos.html'
 })
+
 export class EstabelecimentosPage {
 
   latUsuario: any; // para armazenar a posicao
   lngUsuario: any; // para armazenar a posicao
+  raio: Number = 50000; // armazena o valor do raio limite de filtro dos estabelecimentos
   public toggled: boolean;
   redeArray: Rede[] ;
   originalRedeArray: Rede[];
 
-  constructor(public navCtrl: NavController,  private db: DataService, private utils: Utils, public geolocation: Geolocation) {
+  constructor(public navCtrl: NavController,  private alertCtrl: AlertController , private db: DataService, private utils: Utils, public geolocation: Geolocation) {
     this.toggled = false;
     this.redeArray = [];
     this.originalRedeArray = [];
+  
   }
 
   ngOnInit() {
@@ -61,6 +65,7 @@ export class EstabelecimentosPage {
         });
         this.redeArray = this.originalRedeArray;       
    });
+    this.aplicaraio(this.raio); 
   }
 
   /* Listar mesas */
@@ -87,7 +92,6 @@ export class EstabelecimentosPage {
   }
 
   pesquisar(nome){
-    this.aplicaraio(500);
     let term: string = nome.target.value || '';
     if (term.trim() === '' || term.trim().length < 3){
       this.redeArray = this.originalRedeArray;
@@ -97,7 +101,8 @@ export class EstabelecimentosPage {
           let tmpRede = new Rede(); // rede temporaria para armazenar apenas as buscadas
           rede.estabelecimentos.forEach(estab => {
             let aux: string = estab.nome;
-            if( aux.toLowerCase().includes(term.toLowerCase())){
+            let dist = this.utils.calcdist(this.latUsuario, this.lngUsuario, estab.latitude, estab.longitude);
+            if((+dist <= +this.raio) && aux.toLowerCase().includes(term.toLowerCase())){
                 tmpRede.estabelecimentos.push(estab); // checa o nome do estabelecimento e adiciona na rede temporaria
             }
           });
@@ -120,19 +125,18 @@ export class EstabelecimentosPage {
         let dist;
         if(this.latUsuario || this.lngUsuario){
             dist = this.utils.calcdist(this.latUsuario, this.lngUsuario, estab.latitude, estab.longitude);
-            console.log("pos registrada");
         }else{ 
             /*
              só chama get position se não tiver registrado ainda a pos do usuario
              como o geolocation consome muito recurso, avaliar se é melhor armazenar 
              a pos do usuario em um cache, pra ser usado durante toda a sessão
             */
-            console.log("pos renovada");
             this.getPosition();
             dist = this.utils.calcdist(this.latUsuario, this.lngUsuario, estab.latitude, estab.longitude);
         }
-          console.log("distancia: " + dist +"/ raio: "+ raio +"/"+this.latUsuario);
+          
           if(dist <= raio){
+              console.log("distancia: " + dist +"/ raio: "+ raio +"/"+this.latUsuario);
               tmpRede.estabelecimentos.push(estab); // checa o se a distancia é menor ou igual e adiciona ao array temporario
           }
         
@@ -149,5 +153,33 @@ export class EstabelecimentosPage {
             console.log(err);
             // TODO: Apresentar Alert de erro
         });
+  }
+  settings(){
+    let opcoes : number[] = [100, 50, 20, 10, 5, 1, 0.5, 0.1];
+    let settings = this.alertCtrl.create();
+    settings.setTitle('Defina a distância para busca');
+    opcoes.forEach(km => {
+      let check = false;
+      if(this.raio == (km * 1000)){
+        check = true;
+      }
+      settings.addInput({
+        type: 'radio',
+        label: 'até ' + km + ' KM',
+        value: (km * 1000) + '',
+        checked: check
+      });
+    })
+    
+    settings.addButton('Cancelar');
+    settings.addButton({
+      text: 'OK',
+      handler: data => {
+        this.raio = data;
+        this.aplicaraio(this.raio); 
+      }
+    });
+    settings.present();
+  
   }
 }
