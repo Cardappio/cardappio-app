@@ -25,9 +25,9 @@ export class CheckinPage {
       this.estabelecimentos = [];
   }
   ionViewDidLoad(){
-    this.lerqrcode(); // funcionamento no celular
+    //this.lerqrcode(); // funcionamento no celular
     // 
-    //this.checkin("-Kmb-c0vLJkXbLdaEXmk", "-Kmb0HALJ0J_DyYuD3Fe", "-Kmb1KBfT2UMdU6oPhyG"); // para teste no desktop
+    this.checkin("-Kmb-c0vLJkXbLdaEXmk", "-Kmb0HALJ0J_DyYuD3Fe", "-Kmb1KBfT2UMdU6oPhyG"); // para teste no desktop
 
   }
 

@@ -1,3 +1,10 @@
 page-checkin {
-    background-color: map-get($colors, light);
+    .checkin-content {
+        text-align: center;
+    }
+
+    .checkin-footer {
+        position: absolute;
+        bottom: 0;
+    }
 }

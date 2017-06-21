@@ -9,6 +9,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { HomePage } from '../pages/home/home';
 import { EstabelecimentosModule } from '../pages/estabelecimentos/estabelecimentos.module';
 import { EstabelecimentoDetailsModule } from '../pages/estabelecimento-details/estabelecimento-details.module';
+import { ProdutoDetailsPageModule } from '../pages/produto-details/produto-details.module';
 import { CheckinModule } from '../pages/checkin/checkin.module';
 import { MapaModule } from '../pages/mapa/mapa.module';
 import { PopoverPage } from '../pages/estabelecimento-details/popover';
@@ -53,6 +54,7 @@ export const firebaseConfig = {
     MapaModule,
     EstabelecimentosModule,
     EstabelecimentoDetailsModule,
+    ProdutoDetailsPageModule,
     CheckinModule,
     SuperTabsModule.forRoot(),
     AngularFireModule.initializeApp(firebaseConfig),

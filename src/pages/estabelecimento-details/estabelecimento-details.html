@@ -33,9 +33,9 @@
   <ion-list>
     <ion-item *ngFor="let cardapio of estabelecimento.cardapios" >
       <h1>{{cardapio.categoria.nome}}</h1>
-      <ion-item *ngFor="let produto of cardapio.produtos" >
+      <ion-item *ngFor="let produto of cardapio.produtos" (click)="mostraProduto(produto)">
         <ion-thumbnail item-start>
-          <img [src]="produto.imagemURL" width="200px">
+          <img [src]="produto.imagemUrl" width="200px">
         </ion-thumbnail>
         <h2>{{produto.nome}}</h2>
         <p>{{produto.descricao}}</p>

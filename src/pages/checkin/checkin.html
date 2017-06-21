@@ -9,8 +9,13 @@
   <div *ngFor="let image of myImage" style="margin:100px; float:left; width:200px;">
     <img src='{{image}}' />
   </div>-->
-  <h3 ion-text>Faça Check-in no estabelecimento desejado e tenha acesso ao cardápio</h3>
-  <ion-buttons>
-    <button ion-button color=secondary (click)="lerqrcode()">CheckIn</button>
-  </ion-buttons>
+  <div class="checkin-content">
+    <h3 ion-text>Faça Check-in no estabelecimento desejado e tenha acesso ao cardápio</h3>
+    <ion-buttons>
+      <button ion-button color=secondary (click)="lerqrcode()">CheckIn</button>
+    </ion-buttons>
+  </div>
+  <div class="checkin-footer">
+    <!--<ion-img width="200px" height="200px" src="../assets/images/qrc1.png"></ion-img>-->
+  </div>
 </ion-content>

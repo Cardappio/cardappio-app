@@ -3,9 +3,11 @@ import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/databa
 
 @Injectable()
 export class DataService {
+
     db: AngularFireDatabase;
     mesas: FirebaseListObservable<any>;
     limitlista: number = 10;
+
     constructor(dB: AngularFireDatabase) {
         this.db = dB;
     }
@@ -36,9 +38,10 @@ export class DataService {
     /*
     * Retorna um estabelecimento.
     */
-    getEstabelecimento(idestab: string){
-        return this.db.object('/estabelecimentos/'+idestab , { preserveSnapshot: true});
+    getEstabelecimento(idrede: string, idestab: string){
+        return this.db.object('/estabelecimentos/'+idrede+'/'+idestab, { preserveSnapshot: true});
     }
+
     /*
     * Retorna as mesas de um estabelecimento
     */
@@ -48,6 +51,42 @@ export class DataService {
                 limitToFirst: this.limitlista // limitação da lista
             }});
     }
+
+    /*
+     * Retorna Mesa com base em um Id
+     */
+    getMesa(estabKey: string, mesaKey: string) {
+        return this.db.object('/mesas/'+estabKey+'/'+mesaKey);
+    }
+
+    /*
+     * Retorna Cardápios de um estabelecimento indexado pela categoria
+     */
+    getCardapios(estabKey: string) {
+        return this.db.list('/cardapios/'+estabKey, { preserveSnapshot: true });
+    }
+
+    /*
+     * Retorna Cardápio de uma categoria
+     */
+    getCardapio(estabKey, cardapioKey) {
+        return this.db.list('cardapios/'+estabKey+'/'+cardapioKey, { preserveSnapshot: true });
+    }
+
+    /*
+     * Retorna um Produto de uma categoria de cardápio de um Estabelecimento
+     */
+    getProduto(estabKey: string, catKey: string, prodKey: string) {
+        return this.db.object('cardapios/'+estabKey+'/'+catKey+'/'+prodKey);
+    }
+
+    /* 
+     * Retorna Categoria de Cardápio pelo id da categoria
+     */
+    getCategoriaCardapio(categoriaKey: string) {
+        return this.db.object('/categorias_cardapio/'+categoriaKey);
+    }
+
     /*
     * adiciona uma mesa a um estabelecimento
     */
@@ -58,6 +97,7 @@ export class DataService {
             status: "livre"
          });
     }
+
     /*
     * Atualizar status de uma mesa
     */
