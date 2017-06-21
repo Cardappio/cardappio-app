@@ -5,11 +5,12 @@
 </ion-header>
 
 <ion-content padding>
-  <button (click)="qrcodegen()">Click</button>
+  <!--<button (click)="qrcodegen()">Click</button>
   <div *ngFor="let image of myImage" style="margin:100px; float:left; width:200px;">
     <img src='{{image}}' />
-  </div>
-
-  <button (click)="lerqrcode(true)" style="width:200px; height:30px">CheckIn</button>
-  <button (click)="lerqrcode(false)" style="width:200px; height:30px">CheckOut</button>
+  </div>-->
+  <h3 ion-text>Faça Check-in no estabelecimento desejado e tenha acesso ao cardápio</h3>
+  <ion-buttons>
+    <button ion-button color=secondary (click)="lerqrcode()">CheckIn</button>
+  </ion-buttons>
 </ion-content>
