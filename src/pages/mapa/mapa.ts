@@ -95,7 +95,8 @@ export class MapaPage {
             this.map.setCenter(latLng);
         }, (err) => {
             console.log(err);
-            // TODO: Apresentar Alert de erro
+            this.showAlertPosition(err.message);
+            
         });
   }
 
@@ -173,7 +174,12 @@ export class MapaPage {
     }
   }
 
-  // Métodos auxiliares
+  getLatUsuario(){
+    return this.latUsuario;
+  }
+  getLngUsuario(){
+    return this.lngUsuario;
+  }
 
   
 
@@ -193,6 +199,22 @@ export class MapaPage {
           text: 'Ativar',
           handler: () => {
             /* Abrir configuração de rede */
+          }
+        }
+      ]
+    });
+    confirm.present();
+  }
+  
+  showAlertPosition(detalhes: String) {
+  let confirm = this.alertCtrl.create({
+      title: 'Posição não encontrada',
+      message: '<h3>não foi possível registrar sua posição no mapa<h3><br> Detalhes: ' + detalhes,
+      buttons: [
+        {
+          text: 'Sair',
+          handler: () => {
+            /* fchar o app */
           }
         }
       ]
