@@ -9,13 +9,45 @@
   <div *ngFor="let image of myImage" style="margin:100px; float:left; width:200px;">
     <img src='{{image}}' />
   </div>-->
-  <div class="checkin-content">
-    <h3 ion-text>Faça Check-in no estabelecimento desejado e tenha acesso ao cardápio</h3>
+  <div class="checkin-content" *ngIf="checkinService.getChecado() != true; else checked">
+    <h4 ion-text>Faça Check-in no estabelecimento desejado e tenha acesso ao cardápio</h4>
     <ion-buttons>
       <button ion-button color=secondary (click)="lerqrcode()">CheckIn</button>
     </ion-buttons>
   </div>
-  <div class="checkin-footer">
-    <!--<ion-img width="200px" height="200px" src="../assets/images/qrc1.png"></ion-img>-->
-  </div>
+  <ng-template #checked>
+    <ion-row class="checkin-header">
+      <h5 ion-text>Você fez check-in em:</h5>
+    </ion-row>
+    <ion-row class="checkin-header">
+      <h3 ion-text>{{checkinService.getEstabelecimento().nome}}</h3>
+    </ion-row>
+    <ion-row class="checkin-header">
+      <h5 ion-text>Mesa {{checkinService.getMesa().numero}}</h5>
+    </ion-row>
+    <hr>
+    <div *ngFor="let item of checkinService.getPedido().itens">
+      {{item.quantidade}} {{item.produto.nome}} - {{item.produto.preco}}
+    </div>
+
+    <ion-fab bottom right>
+      <button #fab ion-fab color=secondary>
+        <ion-icon name="add"></ion-icon>
+      </button>
+      <ion-fab-list side="top">
+        <button ion-fab (click)="showCardapio()">
+          <ion-icon name="restaurant"></ion-icon>
+        </button>
+        <button ion-fab >
+          <ion-icon name="create"></ion-icon>
+        </button>
+        <button ion-fab >
+          <ion-icon name="notifications"></ion-icon>
+        </button>
+        <button ion-fab >
+          <ion-icon name="cash"></ion-icon>
+        </button>
+      </ion-fab-list>
+    </ion-fab>
+  </ng-template>
 </ion-content>

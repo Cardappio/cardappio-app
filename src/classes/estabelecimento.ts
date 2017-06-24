@@ -6,7 +6,9 @@ export class Estabelecimento{
     cidade: string;
     descricao: string;
     estado: string;
-    horario_funcionamento: string;
+    dias_funcionamento: string;
+    horario_abertura: Date;
+    horario_fechamento: Date;
     imgURL: string;
     latitude:string;
     longitude: string;
@@ -19,9 +21,9 @@ export class Estabelecimento{
     cardapios: Cardapio[];
     constructor() {
       this.key = ""; this.bairro = ""; this.cidade = ""; this.descricao = ""; this.estado = "";
-      this.horario_funcionamento = ""; this.imgURL = ""; this.latitude = ""; this.longitude = "";
+      this.dias_funcionamento = ""; this.imgURL = ""; this.latitude = ""; this.longitude = "";
       this.nome = ""; this.numero = ""; this.telefone = ""; this.tipo = ""; this.logradouro = "";
-      this.mesas = []; this.cardapios = [];
+      this.mesas = []; this.cardapios = []; this.horario_abertura = new Date(); this.horario_fechamento = new Date();
     }
 
     getId(){

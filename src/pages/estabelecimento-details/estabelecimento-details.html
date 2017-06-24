@@ -5,10 +5,47 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
 
+  <div class="image-container">
+    <ion-img class="image-header" [src]="estabelecimento.imgURL"></ion-img>
+    <div class="image-subscription">
+      <p class="image-subscription-text-left">{{estabelecimento.nome}}</p>
+      <p class="image-subscription-text-right info-available"
+         *ngIf="estabelecimento.dias_funcionamento.indexOf(dataAtual.getDay()) != -1 &&
+                dataAtual.getHours() >= estabelecimento.horario_abertura.getHours() &&
+                dataAtual.getHours() <= estabelecimento.horario_fechamento.getHours();else fechado">
+        Aberto
+      </p>
+      <ng-template #fechado>
+        <p class="image-subscription-text-right info-unavailable">Fechado</p>
+      </ng-template>
+    </div>
+  </div>
 
-<ion-card class="img-card">
+  <div class="body-description">
+    <ion-list>
+      <ion-item>
+        <ion-icon name="home" item-left></ion-icon>
+        {{estabelecimento.logradouro}}, {{estabelecimento.numero}} - {{estabelecimento.bairro}}
+      </ion-item>
+      <ion-item>
+        <ion-icon name="call" item-left></ion-icon>
+        {{estabelecimento.telefone}}
+      </ion-item>
+      <ion-item>
+        <ion-icon name="time" item-left></ion-icon>
+        {{estabelecimento.horario_abertura | date: 'HH:mm'}} - {{estabelecimento.horario_fechamento | date: 'HH:mm'}}
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <button class="button-bottom" ion-button icon-start large full color=secondary (click)="mostrarCardapio()">
+    <ion-icon name="restaurant"></ion-icon>
+       Cardápio
+  </button>
+
+<!--<ion-card class="img-card">
     <img [src]="estabelecimento.imgURL"/>
 
     <ion-card-content class="content-card">
@@ -17,8 +54,16 @@
       </ion-card-title> 
       <p>{{estabelecimento.tipo}}</p>
       <p> Tel.:{{estabelecimento.telefone}}</p>
+      <p *ngIf="estabelecimento.dias_funcionamento.indexOf(dataAtual.getDay()) != -1 &&
+                dataAtual.getHours() >= estabelecimento.horario_abertura.getHours() &&
+                dataAtual.getHours() <= estabelecimento.horario_fechamento.getHours();else fechado">
+                Aberto
+      </p>
+      <ng-template #fechado>
+        <p>Fechado</p>
+      </ng-template>
     </ion-card-content>
-</ion-card>
+</ion-card>-->
 
 <!--<ion-card>
   <ion-card-content>
@@ -29,7 +74,7 @@
     </ion-card-content>
 </ion-card>-->
 
-<div class="scrollbar" id="style-1">
+<!--<div class="scrollbar" id="style-1">
   <ion-list>
     <ion-item *ngFor="let cardapio of estabelecimento.cardapios" >
       <h1>{{cardapio.categoria.nome}}</h1>
@@ -43,5 +88,5 @@
       </ion-item>
     </ion-item>
   </ion-list>
-</div>
+</div>-->
 

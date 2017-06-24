@@ -81,7 +81,8 @@ export class EstabelecimentosPage {
     //Fecha pesquisa após selecionar estabelecimento
     if(this.toggled)
       this.toggleSearch();
-    this.navCtrl.push(EstabelecimentoDetails, {redeKey, estabKey});
+    let mesaKey = '';
+    this.navCtrl.push(EstabelecimentoDetails, {redeKey, estabKey, mesaKey});
   }
 
   pesquisar(nome){

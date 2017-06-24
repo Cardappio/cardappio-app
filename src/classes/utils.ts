@@ -7,16 +7,20 @@
     observar que as keys do objeto do firebase tem que ser iguais às keys do nosso objeto local
 */
 export class Utils{
-    mergeObj(objOrigem, objDestino){
-        for(let key1 in objOrigem){
-            for(let key2 in objDestino){
-                if(key1 == key2){
-                    objDestino[key2] = objOrigem[key1]; 
-                }
+
+  arrayDias = ['Dom.', 'Seg.', 'Ter.', 'Qua.', 'Qui.', 'Sex.', 'Sáb.'];
+
+  mergeObj(objOrigem, objDestino){
+    for(let key1 in objOrigem){
+        for(let key2 in objDestino){
+            if(key1 == key2){
+                objDestino[key2] = objOrigem[key1]; 
             }
         }
     }
-    // Converte Graus para Radiano
+  }
+
+  // Converte Graus para Radiano
   degreesToRadians(degrees) {
     return degrees * Math.PI / 180;
   }
@@ -38,4 +42,5 @@ export class Utils{
     // retorno em metros
     return (earthRadiusKm * c * 1000).toFixed(0);
   }
+
 }

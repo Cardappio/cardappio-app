@@ -9,9 +9,9 @@ export class Produto{
     nome: string;
     preco: number;
     categoria: string;
-    imagemUrl: String;
-    descricao: String;
-    status: String;
+    imagemUrl: string;
+    descricao: string;
+    status: string;
     constructor(){
         this.nome = "";
         this.preco = 0;

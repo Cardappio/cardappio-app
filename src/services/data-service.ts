@@ -60,17 +60,17 @@ export class DataService {
     }
 
     /*
-     * Retorna Cardápios de um estabelecimento indexado pela categoria
+     * Retorna Cardápio de um estabelecimento
      */
-    getCardapios(estabKey: string) {
+    getCardapio(estabKey: string) {
         return this.db.list('/cardapios/'+estabKey, { preserveSnapshot: true });
     }
 
     /*
-     * Retorna Cardápio de uma categoria
+     * Retorna Itens de um cardápio
      */
-    getCardapio(estabKey, cardapioKey) {
-        return this.db.list('cardapios/'+estabKey+'/'+cardapioKey, { preserveSnapshot: true });
+    getItensCardapio(estabKey, categoriaKey) {
+        return this.db.list('cardapios/'+estabKey+'/'+categoriaKey, { preserveSnapshot: true });
     }
 
     /*
@@ -85,6 +85,20 @@ export class DataService {
      */
     getCategoriaCardapio(categoriaKey: string) {
         return this.db.object('/categorias_cardapio/'+categoriaKey);
+    }
+
+    /*
+     * Retorna Pedido de uma mesa de um estabelecimento
+     */
+    getPedidosMesa(estabKey: string, mesaKey: string) {
+        return this.db.list('/pedidos/'+estabKey+'/'+mesaKey, { preserveSnapshot: true });
+    }
+
+    /*
+     * Retorna produtos de um pedido em uma mesa
+     */
+    getProdutosPedido(estabKey: string, mesaKey: string, pedidoKey: string) {
+        return this.db.list('/pedidos/'+estabKey+'/'+mesaKey+'/'+pedidoKey+'/itens/', { preserveSnapshot: true });
     }
 
     /*

@@ -9,14 +9,14 @@
   <div class="image-container">
     <ion-img class="image-header" [src]="produto.imagemUrl"></ion-img>
     <div class="image-subscription">
-      <p class="image-subscription-text">{{produto.descricao}}</p>
-      <p class="image-subscription-price"> {{produto.preco | currency:'BRL':true:'1.2-2'}}</p>
+      <p class="image-subscription-text-left">{{produto.descricao}}</p>
+      <p class="image-subscription-text-right"> {{produto.preco | currency:'BRL':true:'1.2-2'}}</p>
     </div>
   </div>
 
-  <button class="add-button" ion-button icon-start large full color=secondary>
+  <button class="button-bottom" ion-button icon-start large full color=secondary>
     <ion-icon name="add"></ion-icon>
-      Adicionar aos Pedidos
+       Adicionar aos Pedidos
   </button>
 
 </ion-content>
