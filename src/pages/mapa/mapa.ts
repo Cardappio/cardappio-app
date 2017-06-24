@@ -1,11 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
-import { Geolocation } from '@ionic-native/geolocation';
+import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { Network } from '@ionic-native/network';
 import { Estabelecimento } from '../../classes/estabelecimento';
 import { Rede } from '../../classes/Rede';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs/Observable';
 import { DataService } from '../../services/data-service';
 import { Utils } from '../../classes/utils';
 
@@ -24,6 +25,7 @@ export class MapaPage {
   keyEstAtivo: any;
   infowindow : any;
   marker: any;
+  userPos: Geoposition;
   latUsuario: any;  // para receber a posição do usuário (latitude)
   lngUsuario: any;  // para receber a posição do usuário (longitude)
   private limitelista = 10;
@@ -86,7 +88,7 @@ export class MapaPage {
     this.loadData();
   }
 
-  getPosition() {
+  getPosition(){
     this.geolocation.getCurrentPosition()
         .then((position) => {
             let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -95,8 +97,7 @@ export class MapaPage {
             this.map.setCenter(latLng);
         }, (err) => {
             console.log(err);
-            this.showAlertPosition(err.message);
-            
+            this.showAlertPosition();
         });
   }
 
@@ -206,10 +207,10 @@ export class MapaPage {
     confirm.present();
   }
   
-  showAlertPosition(detalhes: String) {
+  showAlertPosition() {
   let confirm = this.alertCtrl.create({
       title: 'Posição não encontrada',
-      message: '<h3>não foi possível registrar sua posição no mapa<h3><br> Detalhes: ' + detalhes,
+      message: '<h3>não foi possível registrar sua posição no mapa<h3>',
       buttons: [
         {
           text: 'Sair',

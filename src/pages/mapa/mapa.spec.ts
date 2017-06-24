@@ -69,23 +69,16 @@ describe('Página do Mapa', () => {
         expect(tit.innerText).toContain('Mapa');
   });
 
-  it('Quando nao encontrar posicao GPS', () => {
+  it('Quando nao encontrar posicao GPS, mostrar mensagem popup', () => {
         comp.getPosition();
         fixture.detectChanges();
-        expect(comp.getLatUsuario()).toBeUndefined();
+        spyOn(comp, 'showAlertPosition').and.callThrough();
+        expect(comp.showAlertPosition()).toHaveBeenCalled();
   });
-  it('Quando encontrar posicao GPS', () => {
+  it('Quando encontrar posicao GPS, registrar lat e lng', () => {
         comp.getPosition();
         fixture.detectChanges();
         expect(comp.getLatUsuario()).toBeGreaterThan(0);
   });
-  /*
-  it('componete deve ter o ', () => {
-    fixture.detectChanges();
-    const h3 = de.nativeElement;
-    expect(h3.innerText).toMatch(/ionic/i,
-      '<h3> should say something about "Ionic"');
-  });
-  */
   
 });

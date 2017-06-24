@@ -1,8 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController, AlertController  } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
-// mudei para a nossa classe local
-//import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
 import { DataService } from '../../services/data-service';
 import { EstabelecimentoDetails } from '../estabelecimento-details/estabelecimento-details';
 import { Rede } from '../../classes/Rede';
@@ -10,14 +8,12 @@ import { Estabelecimento } from '../../classes/estabelecimento';
 import { Mesa } from '../../classes/mesa';
 import { Utils } from '../../classes/utils';
 
-
 @Component({
   selector: 'page-estabelecimentos',
   templateUrl: 'estabelecimentos.html'
 })
 
 export class EstabelecimentosPage {
-
   latUsuario: any; // para armazenar a posicao
   lngUsuario: any; // para armazenar a posicao
   raio: Number = 50000; // armazena o valor do raio limite de filtro dos estabelecimentos
@@ -26,10 +22,9 @@ export class EstabelecimentosPage {
   originalRedeArray: Rede[];
 
   constructor(public navCtrl: NavController,  private alertCtrl: AlertController , private db: DataService, private utils: Utils, public geolocation: Geolocation) {
-    this.toggled = false;
+    this.toggled = true;
     this.redeArray = [];
     this.originalRedeArray = [];
-  
   }
 
   ngOnInit() {
