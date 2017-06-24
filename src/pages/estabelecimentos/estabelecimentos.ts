@@ -22,7 +22,7 @@ export class EstabelecimentosPage {
   originalRedeArray: Rede[];
 
   constructor(public navCtrl: NavController,  private alertCtrl: AlertController , private db: DataService, private utils: Utils, public geolocation: Geolocation) {
-    this.toggled = true;
+    this.toggled = false;
     this.redeArray = [];
     this.originalRedeArray = [];
   }
