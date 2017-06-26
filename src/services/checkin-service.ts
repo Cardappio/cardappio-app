@@ -23,6 +23,10 @@ export class CheckinService {
         return this.checado;
     }
 
+    getEstabKey () {
+        return this.estabelecimento.key;
+    }
+
     getEstabelecimento() {
         return this.estabelecimento;
     }

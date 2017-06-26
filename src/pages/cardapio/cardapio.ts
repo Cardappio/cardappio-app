@@ -23,6 +23,9 @@ export class CardapioPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, private db: DataService,
               private utils: Utils, private checkinService: CheckinService) {
     this.estabelecimento = navParams.get('estabelecimento');
+    console.log("Pagina cardapio: " + this.estabelecimento.key);
+    console.log("Pagina cardapio: (checkinservice)" + this.checkinService.getEstabKey());
+    
     this.cardapio = new Cardapio();
   }
 

@@ -51,11 +51,7 @@ export class CheckinPage {
         this.bcScan.scan().then((barcodeData) => {
             dados = barcodeData.text;
             // criar teste para checar a integridade dos dados antes de enviar para o checkin
-<<<<<<< HEAD
-              this.checkin(dados.split("__")[0], dados.split("__")[1], dados.split("__")[2]);
-=======
               this.checkin(dados.split("__")[0], dados.split("__")[1], dados.split("__")[0]);
->>>>>>> victor
         }, (err) => {
             console.log("Erro: " + err);
         });
@@ -154,9 +150,9 @@ export class CheckinPage {
   }
 
   showCardapio() {
-    this.checkinService.getEstabelecimento().then(estabelecimento => {
-      this.navCtrl.push(CardapioPage, estabelecimento);
-    });
+    let estab = new Estabelecimento();
+    estab = this.checkinService.getEstabelecimento();
+    this.navCtrl.push(CardapioPage, estab);
   }
 
   showAlertMesaOcupada() {
