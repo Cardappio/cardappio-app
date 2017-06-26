@@ -1,3 +1,14 @@
 page-checkin {
+    .checkin-header ion-row{
+        text-align: center;
+    }
 
+    .checkin-content {
+        text-align: center;
+    }
+
+    .checkin-footer {
+        position: absolute;
+        bottom: 0;
+    }
 }

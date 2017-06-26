@@ -144,10 +144,7 @@ export class MapaPage {
                       desc + 
                       "<br></h3>À " + 
                       dist + 
-                      " metros<div id=\"ifowindowsbuttons\"><img src=\"assets/icon/cardappio.png\">" +
-                      "<br> Funcionamento: " + 
-                      estab.horario_funcionamento + 
-                      "</div></div>";       
+                      " metros<div id=\"ifowindowsbuttons\"><img src=\"assets/icon/cardappio.png\">";       
               
       let tmpinfowindow = new google.maps.InfoWindow({
           content: content

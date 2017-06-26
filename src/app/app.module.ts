@@ -9,8 +9,10 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { HomePage } from '../pages/home/home';
 import { EstabelecimentosModule } from '../pages/estabelecimentos/estabelecimentos.module';
 import { EstabelecimentoDetailsModule } from '../pages/estabelecimento-details/estabelecimento-details.module';
+import { ProdutoDetailsPageModule } from '../pages/produto-details/produto-details.module';
 import { CheckinModule } from '../pages/checkin/checkin.module';
 import { MapaModule } from '../pages/mapa/mapa.module';
+import { CardapioPageModule } from '../pages/cardapio/cardapio.module';
 import { PopoverPage } from '../pages/estabelecimento-details/popover';
 
 // Import the AF2 Modules
@@ -19,6 +21,7 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 
 //Services
 import { DataService } from '../services/data-service';
+import { CheckinService } from '../services/checkin-service';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -53,7 +56,9 @@ export const firebaseConfig = {
     MapaModule,
     EstabelecimentosModule,
     EstabelecimentoDetailsModule,
+    ProdutoDetailsPageModule,
     CheckinModule,
+    CardapioPageModule,
     SuperTabsModule.forRoot(),
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule
@@ -71,6 +76,7 @@ export const firebaseConfig = {
     Network,
     BarcodeScanner,
     DataService,
+    CheckinService,
     Geolocation,
     Utils,
     {provide: ErrorHandler, useClass: IonicErrorHandler}

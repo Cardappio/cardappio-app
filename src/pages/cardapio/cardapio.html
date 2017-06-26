@@ -1,0 +1,26 @@
+<ion-header>
+
+  <ion-navbar color="primary">
+    <ion-title>Cardápio</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+
+  <div class="image-container" *ngFor="let produto of cardapio.produtos" (click)="mostrarProduto(produto)">
+    <img class="image-header" [src]=produto.imagemUrl/>
+    <div class="image-subscription">
+      <p class="image-subscription-text-left">{{produto.nome}}</p>
+      <p class="image-subscription-text-right">
+        {{produto.preco | currency:'BRL':true:'1.2-2'}}
+        <ion-icon *ngIf="checkinService.getChecado() == true &&
+                         checkinService.getEstabKey() == estabelecimento.key"
+                  name="add">
+        </ion-icon>
+      </p>
+    </div>
+  </div>
+
+</ion-content>
