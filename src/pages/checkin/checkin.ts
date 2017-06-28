@@ -36,7 +36,8 @@ export class CheckinPage {
   ionViewDidLoad(){
     //this.lerqrcode(); // funcionamento no celular
     // 
-    this.checkin("-Kmb-c0vLJkXbLdaEXmk", "-Kmb0HALJ0J_DyYuD3Fe", "-Kmb1DAsSGIIB0d1UnKq"); // para teste no desktop
+    //this.checkin("-Kmb-c0vLJkXbLdaEXmk", "-Kmb0HALJ0J_DyYuD3Fe", "-Kmb1ELGBL7E9B9de7bO"); // para teste no desktop
+    console.log("Efetuando checkin ...");
 
   }
 
@@ -58,14 +59,15 @@ export class CheckinPage {
   }
 
   checkin(redeKey: string, estabKey: string, mesaKey: string){
-
+    console.log("Checkin: " + redeKey);
     // Verifica se já realizou checkin anteriormente
     if(!this.checkinService.getChecado()) {
       let estab = new Estabelecimento();
       let mes = new Mesa();
-      // Verifica se essa Mesa está sendo usada
+      
       this.db.getMesa(estabKey, mesaKey).subscribe(mesa => {
-        if(/*mesa.status == 'livre'*/true) { // caso a mesa esteja livre, ele pode fazer checkin
+        // Verifica se essa Mesa está sendo usada
+        if(mesa.status == 'livre') { // caso a mesa esteja livre, ele pode fazer checkin
           this.checkinService.setChecado(true);
 
           // Carrega dados do estabelecimento e salva em CheckinService
@@ -73,17 +75,15 @@ export class CheckinPage {
             estab.key = estabelecimento.key;
             this.utils.mergeObj(estabelecimento.val(), estab);
             this.checkinService.setEstabelecimento(estab);
-            this.estabelecimento = estab;
-
+            
             // Carrega dados da mesa e salva em CheckinService
             this.db.getMesa(estabKey, mesaKey).subscribe(mesa => {
               mes.key = mesa.$key;
               mes.numero = mesa.numero;
               mes.status = mesa.status;
               this.checkinService.setMesa(mes);
-
               // Atualiza status da mesa no Firebase
-              this.db.updateMesa(estabKey, mesa.$key, "aguardando");
+              this.db.updateMesa(estabKey, mesa.$key, "ocupada");  
               // Carrega os dados do pedido e salva em CheckService
               this.mostrarPedido();
             });
@@ -95,6 +95,7 @@ export class CheckinPage {
           this.showAlertMesaOcupada();
         }*/
       });
+      
     }else{
       this.showAlertCheckinJaRealizado();
     }
@@ -154,6 +155,10 @@ export class CheckinPage {
     estab = this.checkinService.getEstabelecimento();
     this.navCtrl.push(CardapioPage, estab);
   }
+  checkOut(){
+    this.db.updateMesa(this.checkinService.getEstabelecimento().key, this.checkinService.getMesa().key, "livre");
+    this.checkinService.setChecado(false);
+  }
 
   showAlertMesaOcupada() {
     let confirm = this.alertCtrl.create({
@@ -163,7 +168,6 @@ export class CheckinPage {
           {
             text: 'OK',
             handler: () => {
-              /* fchar o app */
             }
           }
         ]

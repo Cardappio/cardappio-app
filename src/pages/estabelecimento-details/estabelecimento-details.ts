@@ -30,6 +30,7 @@ export class EstabelecimentoDetails {
    produtosArray: Array<any>;
    dataAtual: Date;
    diasFuncionamentoArray: Array<string>;
+   popover: any;
    
 
   constructor(
@@ -67,61 +68,31 @@ export class EstabelecimentoDetails {
   }
 
   ionViewDidLoad(){ // espera carregar a view
-    //this.iniciarCardapios(); 
-    this.mostrarStatusMesa();
+   
   }
-
+  
   mostrarStatusMesa() {
+    this.popover.dismiss();
     if(this.estabKey == this.checkinService.getEstabelecimento().key &&
     this.checkinService.getEstabelecimento().key != ''){ // mostra o popup apenas se o usuário tiver feito checkin no estabelecimento
       this.db.getMesa(this.estabKey, this.mesaKey).subscribe( mesa => {
-          //this.utils.mergeObj(mesa, this.mesaescolhida); // registrando os dados da mesa para a variaver a ser impressa
         this.mesaescolhida.key = mesa.$key;
         this.mesaescolhida.numero = mesa.numero;
         this.mesaescolhida.status = mesa.status;
       });
 
-      let popover = this.popoverCtrl.create(PopoverPage, {
+      this.popover.data = {
         mesa: this.mesaescolhida,
         estab: this.estabelecimento
-      });
-
-      popover.present({
-        //ev: ev
+      };
+      this.popover.present({
+          //ev: ev
       });
     }
   }
-
-  // mostraProduto(produto: Produto){
-  //   this.navCtrl.push(ProdutoDetailsPage, {estabKey: this.estabKey, catKey: produto.categoria, prodKey: produto.key});
-  // }
-
+  
   mostrarCardapio() {
     this.navCtrl.push(CardapioPage, { estabelecimento: this.estabelecimento });
   }
 
-  // iniciarCardapios(){
-   
-  //   this.db.getCardapios(this.estabKey).subscribe( cardapios => { // pega lista de cardapios
-  //     cardapios.forEach(cardapio => {  // loop na lista de cardapios
-        
-  //       this.db.getCardapio(this.estabKey, cardapio.key).subscribe( tipoCardapio => { // pega lista de tipos de cardapios
-  //         let cardapioTmp = new Cardapio(); // inicia um objeto cardapio local
-  //         this.db.getCategoriaCardapio(cardapio.key).subscribe( cat_card => { // pega os dados da categoria do cardapio
-  //             this.utils.mergeObj(cat_card, cardapioTmp.categoria); // armazena os dados no objeto local
-  //         });
-  //         tipoCardapio.forEach(dadosCardapio => { // loop nos produtos do cardapio
-  //           let produtoTmp = new Produto(); // inicia objeto produto local
-  //           produtoTmp.key = dadosCardapio.key;
-  //           produtoTmp.categoria = cardapio.key;
-  //           this.utils.mergeObj(dadosCardapio.val(), produtoTmp); // armazena os dados no objeto local
-  //           cardapioTmp.produtos.push(produtoTmp); // adiciona ao array de produtos do objeto cardapio
-  //           this.produtosArray.push(dadosCardapio);
-  //         });
-  //         this.estabelecimento.cardapios.push(cardapioTmp);    // adiciona o cardapio no array de cardapios do estabelecimento (local)        
-  //       });
-  //     });
-  //   });
-  // }
- 
 }

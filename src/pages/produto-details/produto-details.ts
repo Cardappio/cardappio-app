@@ -4,6 +4,8 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Produto } from '../../classes/produto';
 
 import { DataService } from '../../services/data-service';
+import { CheckinService } from '../../services/checkin-service';
+import { ItemPedido } from '../../classes/itempedido';
 
 @Component({
   selector: 'page-produto-details',
@@ -15,14 +17,16 @@ export class ProdutoDetailsPage {
   categoriaKey: string;
   produtoKey: string;
   produto: Produto;
+  quantidade: number = 1;
+  observacao: string = "nenhuma";
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private db: DataService) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private db: DataService, private checkinservice: CheckinService) {
     this.estabelecimentoKey = navParams.get('estabKey');
     this.categoriaKey = navParams.get('catKey');
     this.produtoKey = navParams.get('prodKey');
     this.produto = new Produto();
   }
-
+ 
   ngOnInit() {
     this.db.getProduto(this.estabelecimentoKey, this.categoriaKey, this.produtoKey).subscribe( prod => {
       this.produto.key = prod.key;
@@ -39,6 +43,13 @@ export class ProdutoDetailsPage {
 
   ionViewDidLoad() {
     
+  }
+  addProduto(){
+    let itempedido = new ItemPedido();
+    itempedido.produto = this.produto;
+    itempedido.observacao = this.observacao;
+    itempedido.quantidade = this.quantidade;
+    this.checkinservice.addItemPedido(itempedido);
   }
 
 }

@@ -1,9 +1,13 @@
 <ion-content #popoverContent2 padding>
 <div #popoverText>
-  <h1>Mesa {{mesa?.numero}} - {{mesa?.status}}</h1>
+  <h1>Mesa {{checkinService.getMesa().numero}} - {{checkinService.getMesa().status}}</h1>
   <p>
     Por favor aguarde enquanto sua mesa está sendo reservada,<br> 
-    {{estab?.nome}} agradece sua preferência
+    {{checkinService.getEstabelecimento().nome}} agradece sua preferência
   </p>
   </div>
+  <button class="button-bottom" ion-button icon-start large full color=secondary (click)="aprovarCheckin()">
+    <ion-icon name="restaurant"></ion-icon>
+       Aprovar
+  </button>
 </ion-content>

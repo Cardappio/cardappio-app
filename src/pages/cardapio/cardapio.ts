@@ -4,6 +4,8 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Estabelecimento } from '../../classes/estabelecimento';
 import { Cardapio } from '../../classes/cardapio';
 import { Produto } from '../../classes/produto';
+import { ItemPedido } from '../../classes/itempedido';
+
 import { Utils } from '../../classes/utils';
 
 import { ProdutoDetailsPage } from '../produto-details/produto-details';
@@ -19,12 +21,12 @@ export class CardapioPage {
 
   estabelecimento: Estabelecimento;
   cardapio: Cardapio;
+  observacao: string = "nenhuma";
+  quantidade: number = 1;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private db: DataService,
               private utils: Utils, private checkinService: CheckinService) {
     this.estabelecimento = navParams.get('estabelecimento');
-    console.log("Pagina cardapio: " + this.estabelecimento.key);
-    console.log("Pagina cardapio: (checkinservice)" + this.checkinService.getEstabKey());
     
     this.cardapio = new Cardapio();
   }
@@ -55,6 +57,14 @@ export class CardapioPage {
 
   }
 
+  addProduto(produto: Produto){
+    let itempedido = new ItemPedido();
+    itempedido.produto = produto;
+    itempedido.observacao = this.observacao;
+    itempedido.quantidade = this.quantidade;
+    this.checkinService.addItemPedido(itempedido);
+  }
+  
   mostrarProduto(produto: Produto) {
     this.navCtrl.push(ProdutoDetailsPage, {estabKey: this.estabelecimento.key, catKey: produto.categoria, prodKey: produto.key});
   }

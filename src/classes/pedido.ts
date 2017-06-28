@@ -2,6 +2,7 @@ import { ItemPedido } from './itempedido';
 
 export class Pedido {
 
+    
     key: string; // Key do pedido
     estabKey: string; // Key do estabelecimento
     mesaKey: string; // Key da mesa

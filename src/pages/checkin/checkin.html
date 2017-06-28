@@ -14,6 +14,9 @@
     <ion-buttons>
       <button ion-button color=secondary (click)="lerqrcode()">CheckIn</button>
     </ion-buttons>
+    <ion-buttons>
+      <button ion-button color=secondary (click)="checkin('-Kmb-c0vLJkXbLdaEXmk', '-Kmb0HALJ0J_DyYuD3Fe', '-Kmb1ELGBL7E9B9de7bO')">CheckIn Debug</button>
+    </ion-buttons>
   </div>
   <ng-template #checked>
     <ion-row class="checkin-header">
@@ -44,7 +47,7 @@
         <button ion-fab >
           <ion-icon name="notifications"></ion-icon>
         </button>
-        <button ion-fab >
+        <button ion-fab (click)="checkOut()">
           <ion-icon name="cash"></ion-icon>
         </button>
       </ion-fab-list>

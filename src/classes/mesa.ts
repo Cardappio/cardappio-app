@@ -5,4 +5,5 @@ export class Mesa{
     constructor() {
       this.numero = ""; this.status = ""; this.key = "";
     }
+    
 }

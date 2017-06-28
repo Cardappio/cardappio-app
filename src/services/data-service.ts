@@ -88,15 +88,47 @@ export class DataService {
     }
 
     /*
-     * Retorna Pedido de uma mesa de um estabelecimento
-     */
+    * Retorna Pedido de uma mesa de um estabelecimento
+    */
     getPedidosMesa(estabKey: string, mesaKey: string) {
         return this.db.list('/pedidos/'+estabKey+'/'+mesaKey, { preserveSnapshot: true });
     }
 
     /*
+    * Adiciona um pedido
+    */
+    addPedidoMesa(estabKey: string, mesaKey: string, prodKey: string, cliente: string) {
+        this.db.object('/pedidos/'+estabKey+'/'+mesaKey+'/'+prodKey).set({
+            status: 'aguardando',
+            cliente: cliente
+        });
+    }
+    /*
+    * Adiciona um item ao pedido
+    */
+    addItemPedido(estabKey: string, mesaKey: string, pedKey: string, obs: string, qty: string) {
+        console.log("Inserindo em : pedidos/: " + estabKey);
+        console.log("/: " + mesaKey);
+        console.log("/: " + pedKey + "/itens");
+        let pedido = this.db.list('/pedidos/'+estabKey+'/'+mesaKey+'/'+pedKey+'/itens');
+        if(obs == undefined){
+            obs = "nenhuma";
+        }
+        pedido.push({
+            observacao: obs,
+            quantidade: qty
+         });
+        /*
+        this.db.list('/pedidos/'+estabKey+'/'+mesaKey+'/'+pedKey+'/itens').push({
+            observacao: obs,
+            quantidade: qty
+        });
+        */
+    }
+
+    /*
      * Retorna produtos de um pedido em uma mesa
-     */
+    */
     getProdutosPedido(estabKey: string, mesaKey: string, pedidoKey: string) {
         return this.db.list('/pedidos/'+estabKey+'/'+mesaKey+'/'+pedidoKey+'/itens/', { preserveSnapshot: true });
     }

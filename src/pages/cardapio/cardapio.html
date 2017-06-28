@@ -9,10 +9,18 @@
 
 <ion-content>
 
+  <div *ngFor="let item of checkinService.getPedido().itens">
+    {{item.quantidade}}<br>
+    {{item.produto.nome}}<br>
+    {{item.produto.preco}}
+  </div>
   <div class="image-container" *ngFor="let produto of cardapio.produtos" (click)="mostrarProduto(produto)">
     <img class="image-header" [src]=produto.imagemUrl/>
     <div class="image-subscription">
-      <p class="image-subscription-text-left">{{produto.nome}}</p>
+      <ion-item>
+        <ion-label>{{produto.nome}}</ion-label>
+        <ion-checkbox (ionChange)="addProduto(produto)"></ion-checkbox>
+      </ion-item>
       <p class="image-subscription-text-right">
         {{produto.preco | currency:'BRL':true:'1.2-2'}}
         <ion-icon *ngIf="checkinService.getChecado() == true &&
