@@ -16,7 +16,14 @@ export class Utils{
     for(let key1 in objOrigem){
         for(let key2 in objDestino){
             if(key1 == key2){
-                objDestino[key2] = objOrigem[key1]; 
+                if(typeof objDestino[key2] === "object" && typeof objOrigem[key1] === "object"){
+                  this.mergeObj(objOrigem[key1], objDestino[key2]);
+                }else{
+                  if(typeof objDestino[key2] == typeof objOrigem[key1]){
+                    objDestino[key2] = objOrigem[key1]; 
+                  }
+                }
+                
             }
         }
     }

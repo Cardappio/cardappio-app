@@ -105,11 +105,8 @@ export class CheckinPage {
   showPedidos(){
     console.log(this.checkinService.getPedidos());
     for(let pedido of this.checkinService.getPedidos()){
-      console.log(pedido);
-      console.log(pedido.itens.length);
-      for(let item in pedido.itens){
+      for(let item of pedido.itens){
         console.log(item);
-        console.log(pedido.itens[item].quantidade);
       }
     }
   }
@@ -147,7 +144,6 @@ export class CheckinPage {
               });
             });
             itemTmp.produto = prodTmp;
-            console.log("Produto encontrado: " + prodTmp.nome);
             pedidoTmp.itens.push(itemTmp);
           });
         });

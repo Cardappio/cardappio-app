@@ -52,7 +52,7 @@ export class CheckinService {
         let novo: boolean = true;
         this.pedidos = [];
         this.db.getPedidosMesa(this.getEstabKey(), this.getMesa().key).subscribe(pedidos => {
-            let pedidoTmp: Pedido;
+            
             pedidos.forEach(pedido => { 
                 /*
                 fiz esse for aqui pra eviter que o array local fique duplicando os valores, 
@@ -74,20 +74,22 @@ export class CheckinService {
                         }
                     }
                 }
-                pedidoTmp = new Pedido();
+                let pedidoTmp = new Pedido();
                 pedidoTmp.key = pedido.key;
                 this.utils.mergeObj(pedido.val(), pedidoTmp);
-                console.log("Retorno do firebase: " + pedido.val());
                 
-                if(pedido.val().itens !== undefined && pedido.val().itens.length > 0){ // garantir que tem algo aqui
-                    for(let item of pedido.val().itens){
-                        let itemTmp = new ItemPedido();
-                        let prodTmp = new Produto();
-                        this.utils.mergeObj(item, itemTmp);
-                        this.utils.mergeObj(item.val().produto, prodTmp);
-                        itemTmp.produto = prodTmp;
-                        pedidoTmp.itens.push(itemTmp);
-                        console.log("Tamanho de itens no pedido: " + pedidoTmp.itens.length);
+                if(pedido.val().itens !== undefined){ // garantir que tem algo aqui
+                    for(let k in pedido.val().itens){
+                        try{
+                            let itemTmp = new ItemPedido();
+                            let prodTmp = new Produto();
+                            this.utils.mergeObj(pedido.val().itens[k], itemTmp);
+                            prodTmp.key = k;
+                            itemTmp.produto = prodTmp;
+                            pedidoTmp.itens.push(itemTmp);
+                        }catch(err){
+                            console.log(err);
+                        }
                     }
                 }
                 

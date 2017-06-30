@@ -13,7 +13,7 @@ export class Pedido {
         this.key = '';
         this.estabKey = '';
         this.mesaKey = '';
-        this.itens = [];
+        this.itens = new Array();
         this.status = '';
     }
 }
