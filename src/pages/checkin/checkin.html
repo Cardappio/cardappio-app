@@ -15,7 +15,7 @@
       <button ion-button color=secondary (click)="lerqrcode()">CheckIn</button>
     </ion-buttons>
     <ion-buttons>
-      <button ion-button color=secondary (click)="checkin('-Kmb-c0vLJkXbLdaEXmk', '-Kmb0HALJ0J_DyYuD3Fe', '-Kmb1ELGBL7E9B9de7bO')">CheckIn Debug</button>
+      <button ion-button color=secondary (click)="checkin(redeKey, stabKey, mesaKey)">CheckIn Debug</button>
     </ion-buttons>
   </div>
   <ng-template #checked>
@@ -29,8 +29,12 @@
       <h5 ion-text>Mesa {{checkinService.getMesa().numero}}</h5>
     </ion-row>
     <hr>
-    <div *ngFor="let item of checkinService.getPedido().itens">
-      {{item.quantidade}} {{item.produto.nome}} - {{item.produto.preco}}
+    <div *ngFor="let pedido of checkinService.getPedidos()">
+      <p>Status do pedido: {{pedido.status}} / {{pedido.itens.length}}</p>
+      <ul ui-if="!!pedido.itens.length">
+        <li ng-repeat="item in pedido.itens">{{item}}</li>
+      </ul>
+      
     </div>
 
     <ion-fab bottom right>
@@ -41,7 +45,7 @@
         <button ion-fab (click)="showCardapio()">
           <ion-icon name="restaurant"></ion-icon>
         </button>
-        <button ion-fab >
+        <button ion-fab (click)="showPedidos()">
           <ion-icon name="create"></ion-icon>
         </button>
         <button ion-fab >

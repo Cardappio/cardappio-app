@@ -13,9 +13,5 @@ export class PopoverPage {
   ngOnInit() {
     
   }
-  /* Apenas para debug, mover para área administrativa depois */
-  aprovarCheckin(){
-    this.checkinService.aprovaCheckin();
-  }
-
+  
 }

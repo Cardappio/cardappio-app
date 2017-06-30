@@ -2,14 +2,16 @@
     Classe com métodos úteis e/ou repetitivos
 */
 
-/*
-    este método pega os dados retornado do firebase e os inclui em um objeto local
-    observar que as keys do objeto do firebase tem que ser iguais às keys do nosso objeto local
-*/
+
 export class Utils{
 
   arrayDias = ['Dom.', 'Seg.', 'Ter.', 'Qua.', 'Qui.', 'Sex.', 'Sáb.'];
 
+    /*
+    este método pega os dados retornado do firebase e os inclui em um objeto local
+    observar que as keys do objeto do firebase tem que ser iguais às keys do nosso objeto local
+    limitado a um nivel ou seja, se o conteudo de uma key for outro objeto, necessário chamar novamente
+    */
   mergeObj(objOrigem, objDestino){
     for(let key1 in objOrigem){
         for(let key2 in objDestino){

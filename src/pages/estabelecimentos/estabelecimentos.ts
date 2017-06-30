@@ -16,7 +16,7 @@ import { Utils } from '../../classes/utils';
 export class EstabelecimentosPage {
   latUsuario: any; // para armazenar a posicao
   lngUsuario: any; // para armazenar a posicao
-  raio: Number = 50000; // armazena o valor do raio limite de filtro dos estabelecimentos
+  raio: Number = 100000; // armazena o valor do raio limite de filtro dos estabelecimentos
   public toggled: boolean;
   redeArray: Rede[] ;
   originalRedeArray: Rede[];
@@ -25,8 +25,8 @@ export class EstabelecimentosPage {
     this.toggled = false;
     this.redeArray = [];
     this.originalRedeArray = [];
+    
   }
-
   ngOnInit() {
     this.iniciarEstabelecimentos();
   }

@@ -8,26 +8,44 @@
 
 
 <ion-content>
-
-  <div *ngFor="let item of checkinService.getPedido().itens">
-    {{item.quantidade}}<br>
-    {{item.produto.nome}}<br>
-    {{item.produto.preco}}
+  <div class="pedido" *ngIf="checkinService.getTotalPedido() > 0">
+    <div style="text-align: center"><b>Seu Pedido</b></div>
+    <ul class="itens">
+      <li *ngFor="let item of checkinService.getPedido().itens" (click)="onSelect(item)">
+        <span class="quantidade">{{item.quantidade}} - </span>
+        <span class="nome">{{item.produto.nome}}</span>
+        <span class="preco">R${{item.produto.preco}}</span>
+        <button class="delete" (click)="removeitem(item); $event.stopPropagation()">x</button>
+      </li>
+    </ul>
+    <span class="total">Total: {{checkinService.getTotalPedido() | currency:'BRL':true:'1.2-2'}}</span><br>
+    <div>
+    <button class="button-bottom" ion-button icon-start small full color="secondary" (click)='finalizaPedido();'>FINALIZAR</button>
+    </div>
   </div>
-  <div class="image-container" *ngFor="let produto of cardapio.produtos" (click)="mostrarProduto(produto)">
+  
+
+  
+  <div class="image-container" *ngFor="let produto of cardapio.produtos" 
+  (click)="addProduto(produto)"
+  (longPress)="mostrarProduto(produto)"
+  (swipeleft)="alteraQuantidade(-1)"
+  (swiperight)="alteraQuantidade(1)">
+
     <img class="image-header" [src]=produto.imagemUrl/>
     <div class="image-subscription">
-      <ion-item>
-        <ion-label>{{produto.nome}}</ion-label>
-        <ion-checkbox (ionChange)="addProduto(produto)"></ion-checkbox>
-      </ion-item>
-      <p class="image-subscription-text-right">
+      
+        {{produto.nome}}
+        <span *ngIf="produto.status == 'disponivel'">Pedir <b>{{quantidade}}</b></span>
+        <span *ngIf="produto.status == 'esgotado'">ESGOTADO</span>
+      
+        <p class="image-subscription-text-right">
         {{produto.preco | currency:'BRL':true:'1.2-2'}}
         <ion-icon *ngIf="checkinService.getChecado() == true &&
                          checkinService.getEstabKey() == estabelecimento.key"
                   name="add">
         </ion-icon>
-      </p>
+      
     </div>
   </div>
 

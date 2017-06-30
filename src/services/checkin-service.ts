@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { DataService } from './data-service';
+import { Utils } from '../classes/utils';
 import { Estabelecimento } from '../classes/estabelecimento';
 import { Mesa } from '../classes/mesa';
 import { Pedido } from '../classes/pedido';
@@ -14,12 +15,14 @@ export class CheckinService {
     private estabelecimento: Estabelecimento; // Estabelecimento em que está checado
     private mesa: Mesa; // Mesa em que está checado
     private pedido: Pedido; // Pedido do usuário
+    private pedidos: Array<Pedido>; // Pedidos do usuário
 
-    constructor(private db: DataService) {
+    constructor(private db: DataService, private utils: Utils) {
         this.checado = false;
         this.estabelecimento = new Estabelecimento();
         this.mesa = new Mesa();
         this.pedido = new Pedido();
+        this.pedidos = new Array();
     }
 
     getChecado() {
@@ -41,11 +44,85 @@ export class CheckinService {
     getPedido() {
         return this.pedido;
     }
-
-    aprovaCheckin(){
-        this.db.updateMesa(this.estabelecimento.key, this.mesa.key, "ocupada");
-        this.mesa.status = "ocupada"; // atualiza mesa local
+    getPedidos(){
+        return this.pedidos;
     }
+    
+    setPedidos() {
+        let novo: boolean = true;
+        this.pedidos = [];
+        this.db.getPedidosMesa(this.getEstabKey(), this.getMesa().key).subscribe(pedidos => {
+            let pedidoTmp: Pedido;
+            pedidos.forEach(pedido => { 
+                /*
+                fiz esse for aqui pra eviter que o array local fique duplicando os valores, 
+                observei que isso ocorre sempre que se altera qualquer valor no firebase,
+                ou seja, toda vez que o firebase atualiza, esse método aqui é chamado
+                */
+                for(let index in this.pedidos){
+                    if(this.pedidos[index].key === pedido.key){
+                        novo = false; // aqui faz com que o objeto não seja incluso
+                        this.utils.mergeObj(pedido.val(), this.pedidos[index]);
+                        let indexItem = 0;
+                        for(let item of pedido.val().itens){
+                            let itemTmp = new ItemPedido();
+                            let prodTmp = new Produto();
+                            this.utils.mergeObj(item.produto, prodTmp);
+                            this.utils.mergeObj(item, itemTmp);
+                            this.pedidos[index].itens[indexItem].produto = prodTmp;
+                            indexItem++;
+                        }
+                    }
+                }
+                pedidoTmp = new Pedido();
+                pedidoTmp.key = pedido.key;
+                this.utils.mergeObj(pedido.val(), pedidoTmp);
+                console.log("Retorno do firebase: " + pedido.val());
+                
+                if(pedido.val().itens !== undefined && pedido.val().itens.length > 0){ // garantir que tem algo aqui
+                    for(let item of pedido.val().itens){
+                        let itemTmp = new ItemPedido();
+                        let prodTmp = new Produto();
+                        this.utils.mergeObj(item, itemTmp);
+                        this.utils.mergeObj(item.val().produto, prodTmp);
+                        itemTmp.produto = prodTmp;
+                        pedidoTmp.itens.push(itemTmp);
+                        console.log("Tamanho de itens no pedido: " + pedidoTmp.itens.length);
+                    }
+                }
+                
+                if(novo){
+                    this.pedidos.push(pedidoTmp);
+                }
+            });
+        });
+    }
+    /*
+    função para gravar o pedido no firebase
+    */
+    gravaPedido(){
+        this.pedidos.push(this.pedido); // grava localmente
+        let estabKey = this.estabelecimento.key;
+        let mesaKey = this.mesa.key;
+        let pedidoKey = + new Date(); // tem que rever este id depois ...
+        this.db.addPedidoMesa(estabKey, mesaKey, pedidoKey+"", "Cliente Padrao"); // ver uma forma de identificar o cliente
+        for(let item of this.pedido.itens){
+            this.db.addItemPedido(estabKey, mesaKey, pedidoKey+"", item.produto.key, item.observacao, item.quantidade+"");
+        }
+        this.resetPedido();
+        this.setPedidos();
+    }
+    resetPedido(){
+        this.pedido = new Pedido();
+    }
+    getTotalPedido(){
+        let total = 0;
+        for(let item of this.pedido.itens){
+            total += +item.quantidade * +item.produto.preco;
+        }
+        return total;
+    }
+    
     setChecado(check: boolean) {
         this.checado = check;   // atualiza status do checkinservice
     }
@@ -57,22 +134,23 @@ export class CheckinService {
     setMesa(mesa: Mesa) {
         this.mesa = mesa;
     }
-
+    checkOut(){
+        //reset mesa
+        let stabKey = this.estabelecimento.key;
+        let mesaKey = this.mesa.key;
+        let mesa = this.db.updateMesa(stabKey, mesaKey, "livre");
+        this.mesa = new Mesa();
+        // reset pedido
+        this.pedido = new Pedido();
+        // reset estab
+        this.estabelecimento = new Estabelecimento();
+        // marca checado falso
+        this.checado = false;
+    }
     setPedido(pedido: Pedido) {
         this.pedido = pedido;
     }
-    /*
-    Adiciona um item ao pedido
-    */
-    addItemPedido(item: ItemPedido){
-        this.pedido.itens.push(item);
-        let stabKey = this.estabelecimento.key;
-        let mesaKey = this.mesa.key;
-        let pedKey = this.pedido.key;
-        let obs = item.observacao;
-        let qty = item.quantidade;
-        this.db.addItemPedido(stabKey, mesaKey, pedKey, obs, qty+"");
-    }
+    
     
 
 }

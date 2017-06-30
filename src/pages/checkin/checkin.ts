@@ -21,8 +21,13 @@ import { CardapioPage } from '../cardapio/cardapio';
 })
 export class CheckinPage {
 
-  public myImage: string[];
   estabelecimento: Estabelecimento;
+  private pedidos: Array<Pedido>;
+
+  /* variaveis para debug do checkin sem leitor de qrcode */
+  private redeKey: string = "chocolatras"; // para debug
+  private stabKey: string = "garoto"; // para debug
+  private mesaKey: string = "mesa1"; // para debug
 
   constructor(public navCtrl: NavController, 
   public bcScan: BarcodeScanner, 
@@ -30,17 +35,15 @@ export class CheckinPage {
   private utils: Utils,
   public alertCtrl: AlertController,
   private checkinService: CheckinService) {
-      this.myImage = [];
       this.estabelecimento = new Estabelecimento();
+      this.pedidos = [];
   }
-  ionViewDidLoad(){
-    //this.lerqrcode(); // funcionamento no celular
-    // 
-    //this.checkin("-Kmb-c0vLJkXbLdaEXmk", "-Kmb0HALJ0J_DyYuD3Fe", "-Kmb1ELGBL7E9B9de7bO"); // para teste no desktop
-    console.log("Efetuando checkin ...");
-
+  
+  ionViewDidLoad() {
+    if(this.checkinService.getChecado()){ // se fez checkin, pega os pedidos para atualizar em tempo real
+      //this.carregaPedidos();
+    }
   }
-
   /*
   Aqui o código deve estar no formado x__y__z, onde:
   x identifica a rede de estabelecimentos
@@ -57,17 +60,17 @@ export class CheckinPage {
             console.log("Erro: " + err);
         });
   }
-
   checkin(redeKey: string, estabKey: string, mesaKey: string){
-    console.log("Checkin: " + redeKey);
+    this.stabKey = estabKey;
+    this.mesaKey = mesaKey;
+    this.redeKey = redeKey;
     // Verifica se já realizou checkin anteriormente
-    if(!this.checkinService.getChecado()) {
+    if(/*!this.checkinService.getChecado()*/true) {
       let estab = new Estabelecimento();
       let mes = new Mesa();
       
       this.db.getMesa(estabKey, mesaKey).subscribe(mesa => {
         // Verifica se essa Mesa está sendo usada
-        if(mesa.status == 'livre') { // caso a mesa esteja livre, ele pode fazer checkin
           this.checkinService.setChecado(true);
 
           // Carrega dados do estabelecimento e salva em CheckinService
@@ -82,40 +85,46 @@ export class CheckinPage {
               mes.numero = mesa.numero;
               mes.status = mesa.status;
               this.checkinService.setMesa(mes);
-              // Atualiza status da mesa no Firebase
-              this.db.updateMesa(estabKey, mesa.$key, "ocupada");  
-              // Carrega os dados do pedido e salva em CheckService
-              this.mostrarPedido();
             });
             
           });
+          this.db.updateMesa(estabKey, mesaKey, "ocupada");
           // Abre tela do estabelecimento em que foi feito checkin
-          this.showOptions(redeKey, estabKey, mesa.$key);
-        }/*else {
-          this.showAlertMesaOcupada();
-        }*/
+          
       });
-      
+      //this.carregaPedidos();
+      this.checkinService.setPedidos();
     }else{
-      this.showAlertCheckinJaRealizado();
+      //this.showAlertCheckinJaRealizado();
     }
-
+    this.showOptions(redeKey, estabKey, mesaKey);
     // TODO: enviar dados para o servidor
     // TODO: solicitar aprovacao do gerente
     
   }
-
+  showPedidos(){
+    console.log(this.checkinService.getPedidos());
+    for(let pedido of this.checkinService.getPedidos()){
+      console.log(pedido);
+      console.log(pedido.itens.length);
+      for(let item in pedido.itens){
+        console.log(item);
+        console.log(pedido.itens[item].quantidade);
+      }
+    }
+  }
   // Carrega os dados do pedido e salva em CheckService
-  mostrarPedido() {
-    let estabKey = this.checkinService.getEstabelecimento().key;
-    let mesaKey = this.checkinService.getMesa().key;
-    let pedido = new Pedido();
+  carregaPedidos() {
+    let estabKey = this.mesaKey;
+    let mesaKey = this.mesaKey;
+    let pedidoTmp: Pedido;
     this.db.getPedidosMesa(estabKey, mesaKey).subscribe(pedidoMesa => {
       pedidoMesa.forEach(pedidoM => {
-        pedido.key = pedidoM.key;
-        pedido.estabKey = estabKey;
-        pedido.mesaKey = mesaKey;
-        pedido.status = pedidoM.val().status;
+        pedidoTmp = new Pedido();
+        pedidoTmp.key = pedidoM.key;
+        pedidoTmp.estabKey = estabKey;
+        pedidoTmp.mesaKey = mesaKey;
+        pedidoTmp.status = pedidoM.val().status;
         this.db.getProdutosPedido(estabKey, mesaKey, pedidoM.key).subscribe(produtos => {
           produtos.forEach(produto => {
             let itemTmp = new ItemPedido();
@@ -138,12 +147,15 @@ export class CheckinPage {
               });
             });
             itemTmp.produto = prodTmp;
-            pedido.itens.push(itemTmp);
+            console.log("Produto encontrado: " + prodTmp.nome);
+            pedidoTmp.itens.push(itemTmp);
           });
         });
       });
+      //console.log("Inserindo: " + pedidoTmp.itens[0].produto.nome);
+    this.pedidos.push(pedidoTmp);  
     });
-    this.checkinService.setPedido(pedido);
+    
   }
 
   showOptions(redeKey, estabKey, mesaKey){
@@ -156,8 +168,7 @@ export class CheckinPage {
     this.navCtrl.push(CardapioPage, estab);
   }
   checkOut(){
-    this.db.updateMesa(this.checkinService.getEstabelecimento().key, this.checkinService.getMesa().key, "livre");
-    this.checkinService.setChecado(false);
+    this.checkinService.checkOut();
   }
 
   showAlertMesaOcupada() {

@@ -1,3 +1,11 @@
 page-cardapio {
-
+    div.finalizarbutton{
+        text-align : right;
+    }
+    div.pedido{
+        position:fixed; 
+        z-index:1000; 
+        top:10%; 
+        background-color:aquamarine
+    }
 }

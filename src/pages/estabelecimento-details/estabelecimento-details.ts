@@ -67,9 +67,6 @@ export class EstabelecimentoDetails {
     });
   }
 
-  ionViewDidLoad(){ // espera carregar a view
-   
-  }
   
   mostrarStatusMesa() {
     this.popover.dismiss();
@@ -90,7 +87,11 @@ export class EstabelecimentoDetails {
       });
     }
   }
-  
+  mostraPedidos(){
+    for (let pedido of this.checkinService.getPedidos()){
+      console.log(pedido);
+    }
+  }
   mostrarCardapio() {
     this.navCtrl.push(CardapioPage, { estabelecimento: this.estabelecimento });
   }

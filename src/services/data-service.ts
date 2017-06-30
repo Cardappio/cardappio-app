@@ -77,7 +77,7 @@ export class DataService {
      * Retorna um Produto de uma categoria de cardápio de um Estabelecimento
      */
     getProduto(estabKey: string, catKey: string, prodKey: string) {
-        return this.db.object('cardapios/'+estabKey+'/'+catKey+'/'+prodKey);
+        return this.db.object('cardapios/'+estabKey+'/'+catKey+'/'+prodKey, { preserveSnapshot: true });
     }
 
     /* 
@@ -97,8 +97,8 @@ export class DataService {
     /*
     * Adiciona um pedido
     */
-    addPedidoMesa(estabKey: string, mesaKey: string, prodKey: string, cliente: string) {
-        this.db.object('/pedidos/'+estabKey+'/'+mesaKey+'/'+prodKey).set({
+    addPedidoMesa(estabKey: string, mesaKey: string, pedKey: string, cliente: string) {
+        this.db.object('/pedidos/'+estabKey+'/'+mesaKey+'/'+pedKey).set({
             status: 'aguardando',
             cliente: cliente
         });
@@ -106,24 +106,15 @@ export class DataService {
     /*
     * Adiciona um item ao pedido
     */
-    addItemPedido(estabKey: string, mesaKey: string, pedKey: string, obs: string, qty: string) {
-        console.log("Inserindo em : pedidos/: " + estabKey);
-        console.log("/: " + mesaKey);
-        console.log("/: " + pedKey + "/itens");
-        let pedido = this.db.list('/pedidos/'+estabKey+'/'+mesaKey+'/'+pedKey+'/itens');
+    addItemPedido(estabKey: string, mesaKey: string, pedKey: string, itemKey: string, obs: string, qty: string) {
+        let itempedido = this.db.object('/pedidos/'+estabKey+'/'+mesaKey+'/'+pedKey+'/itens/'+itemKey);
         if(obs == undefined){
             obs = "nenhuma";
         }
-        pedido.push({
-            observacao: obs,
-            quantidade: qty
-         });
-        /*
-        this.db.list('/pedidos/'+estabKey+'/'+mesaKey+'/'+pedKey+'/itens').push({
+        itempedido.set({
             observacao: obs,
             quantidade: qty
         });
-        */
     }
 
     /*
