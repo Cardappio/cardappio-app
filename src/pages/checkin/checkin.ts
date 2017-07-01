@@ -112,7 +112,7 @@ export class CheckinPage {
   }
   // Carrega os dados do pedido e salva em CheckService
   carregaPedidos() {
-    let estabKey = this.mesaKey;
+    let estabKey = this.stabKey;
     let mesaKey = this.mesaKey;
     let pedidoTmp: Pedido;
     this.db.getPedidosMesa(estabKey, mesaKey).subscribe(pedidoMesa => {

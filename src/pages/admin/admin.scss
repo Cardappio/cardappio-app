@@ -1,0 +1,25 @@
+div.mesas{
+    float: left;
+    border: 3px solid #000;
+    margin: 3px;
+    padding: 10px;
+}
+div.pedidos{
+    background: #ccc;
+    float: left;
+    margin: 2px;
+    padding: 10px;
+    box-shadow: 4px 4px 2px #888888;
+}
+div.aguardando{
+    background-color: #ff2200;
+    padding: 10px;
+    color: #fff;
+    box-shadow: 4px 4px 2px #888888;
+}
+div.nomeestab{
+    text-align: left;
+}
+div.estabelecimento{
+    margin: 5px;
+}
