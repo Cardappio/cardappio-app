@@ -57,7 +57,6 @@ export class CardapioPage {
         });
       });
     });
-
   }
 
   addProduto(produto: Produto){
@@ -91,7 +90,6 @@ export class CardapioPage {
   }
   finalizaPedido(){
     this.checkinService.gravaPedido();
-    console.log("Id estab depois de finalizado: " + this.checkinService.getEstabelecimento().key);
     this.navCtrl.pop(); // volta para pagina anterior
     this.navCtrl.pop(); // volta para pagina anterior à anterior
   }
