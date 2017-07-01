@@ -98,6 +98,7 @@ export class DataService {
     * Adiciona um pedido
     */
     addPedidoMesa(estabKey: string, mesaKey: string, pedKey: string, cliente: string) {
+        console.log(estabKey +"/"+mesaKey +"/"+pedKey);
         this.db.object('/pedidos/'+estabKey+'/'+mesaKey+'/'+pedKey).set({
             status: 'aguardando',
             cliente: cliente

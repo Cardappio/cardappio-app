@@ -81,9 +81,10 @@ export class CheckinPage {
             
             // Carrega dados da mesa e salva em CheckinService
             this.db.getMesa(estabKey, mesaKey).subscribe(mesa => {
-              mes.key = mesa.$key;
+              mes.key = mesaKey;
               mes.numero = mesa.numero;
               mes.status = mesa.status;
+              console.log("Mesa: " + mes.key);
               this.checkinService.setMesa(mes);
             });
             
@@ -112,7 +113,7 @@ export class CheckinPage {
   }
   // Carrega os dados do pedido e salva em CheckService
   carregaPedidos() {
-    let estabKey = this.mesaKey;
+    let estabKey = this.stabKey;
     let mesaKey = this.mesaKey;
     let pedidoTmp: Pedido;
     this.db.getPedidosMesa(estabKey, mesaKey).subscribe(pedidoMesa => {
