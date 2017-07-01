@@ -32,6 +32,8 @@ export class AdminPage {
     this.iniciarEstabelecimentos();
   }
   iniciarEstabelecimentos(){
+    this.redeArray = [];
+    this.redeOriginalArray = [];
     this.db.setLimit(10); 
     this.db.getRedes().subscribe( redes => {  // retorna array de redes do bd
         redes.forEach(rede => { // varre todas as redes
