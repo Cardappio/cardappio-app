@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavController, AlertController  } from 'ionic-angular';
 import { Geolocation } from '@ionic-native/geolocation';
 import { DataService } from '../../services/data-service';
@@ -41,6 +41,8 @@ export class EstabelecimentosPage {
   }
 
   iniciarEstabelecimentos(){
+    this.originalRedeArray = [];
+    this.redeArray = this.originalRedeArray; 
     this.db.setLimit(10); 
     this.db.getRedes().subscribe( redes => {  // retorna array de redes do bd
         redes.forEach(rede => { // varre todas as redes
@@ -60,17 +62,29 @@ export class EstabelecimentosPage {
                   tmpEstab.horario_abertura.setHours(hora_abertura.split(":")[0], hora_abertura.split(":")[1]);
                   let hora_fechamento = estabelecimento.val().horario_fechamento;
                   tmpEstab.horario_fechamento.setHours(hora_fechamento.split(":")[0], hora_fechamento.split(":")[1]);
-                  console.log(tmpEstab);
-                  tmpRede.estabelecimentos.push(tmpEstab);  // inserimos no array de estabelecimentos (usado para fins de pesquisa)
+                  // calcula localização do usuário
+                  this.geolocation.getCurrentPosition()
+                      .then((position) => {
+                          // calcula distância do estabelecimento
+                          let dist = this.utils.calcdist(position.coords.latitude, position.coords.longitude, +estabelecimento.val().latitude, +estabelecimento.val().longitude);
+                          if(+dist <= +this.raio) { // se estabelecimento está no raio escolhido
+                            console.log(tmpEstab);
+                            tmpRede.estabelecimentos.push(tmpEstab);  // inserimos no array de estabelecimentos (usado para fins de pesquisa)
+                          }
+                      }, (err) => {
+                          console.log(err);
+                          // TODO: Apresentar Alert de erro
+                      });
                   //this.originalEstabArray.push(tmpEstab); // inserimos no array de estabelecimentos (usado para fins de pesquisa)
               });
-              
               this.originalRedeArray.push(tmpRede);
           });
         });
         this.redeArray = this.originalRedeArray;       
    });
-    this.aplicaraio(this.raio); 
+    // this.aplicaraio(this.raio); 
+    // console.log(this.latUsuario);
+    // console.log(this.lngUsuario);
   }
 
   /* Listar mesas */
@@ -107,8 +121,7 @@ export class EstabelecimentosPage {
           let tmpRede = new Rede(); // rede temporaria para armazenar apenas as buscadas
           rede.estabelecimentos.forEach(estab => {
             let aux: string = estab.nome;
-            let dist = this.utils.calcdist(this.latUsuario, this.lngUsuario, estab.latitude, estab.longitude);
-            if((+dist <= +this.raio) && aux.toLowerCase().includes(term.toLowerCase())){
+            if(aux.toLowerCase().includes(term.toLowerCase())){
                 tmpRede.estabelecimentos.push(estab); // checa o nome do estabelecimento e adiciona na rede temporaria
             }
           });
@@ -137,8 +150,15 @@ export class EstabelecimentosPage {
              como o geolocation consome muito recurso, avaliar se é melhor armazenar 
              a pos do usuario em um cache, pra ser usado durante toda a sessão
             */
-            this.getPosition();
-            dist = this.utils.calcdist(this.latUsuario, this.lngUsuario, estab.latitude, estab.longitude);
+            this.geolocation.getCurrentPosition()
+                .then((position) => {
+                    this.latUsuario = position.coords.latitude;
+                    this.lngUsuario = position.coords.longitude;
+                    dist = this.utils.calcdist(this.latUsuario, this.lngUsuario, estab.latitude, estab.longitude);
+                }, (err) => {
+                    console.log(err);
+                    // TODO: Apresentar Alert de erro
+                });
         }
           
           if(dist <= raio){
@@ -150,16 +170,7 @@ export class EstabelecimentosPage {
        this.redeArray.push(tmpRede); // adiciona a rede temporaria no array a ser impresso
     });
   }
-  getPosition() {
-    this.geolocation.getCurrentPosition()
-        .then((position) => {
-            this.latUsuario = position.coords.latitude;
-            this.lngUsuario = position.coords.longitude
-        }, (err) => {
-            console.log(err);
-            // TODO: Apresentar Alert de erro
-        });
-  }
+
   settings(){
     let opcoes : number[] = [100, 50, 20, 10, 5, 1, 0.5, 0.1];
     let settings = this.alertCtrl.create();
@@ -182,7 +193,7 @@ export class EstabelecimentosPage {
       text: 'OK',
       handler: data => {
         this.raio = data;
-        this.aplicaraio(this.raio); 
+        this.iniciarEstabelecimentos();
       }
     });
     settings.present();

@@ -25,7 +25,7 @@
 
 <ion-content>
   
-  <ng-template ngFor let-rede [ngForOf]="redeArray" >
+  <ng-template ngFor let-rede [ngForOf]="redeArray">
     <div class="image-container" *ngFor="let estabelecimento of rede.estabelecimentos" (click)="showOptions(rede.key, estabelecimento.key)">
         <img class="image-header" [src]=estabelecimento.imgURL>
         <div class="image-subscription">
