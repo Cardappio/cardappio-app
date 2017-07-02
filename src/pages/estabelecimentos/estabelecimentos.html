@@ -23,29 +23,37 @@
 
 </ion-header>
 
-<ion-content padding>
-  
-
-  <ion-list>
-      <ng-template ngFor let-rede [ngForOf]="redeArray" >
-        <ng-template ngFor let-estabelecimento [ngForOf]="rede.estabelecimentos" >
-          <ion-item (click)="showOptions(rede.key, estabelecimento.key)" >
-            <ion-avatar item-start>
-              <img [src]=estabelecimento.imgURL>
-            </ion-avatar>
-            <h2>{{estabelecimento.nome}}</h2>
-            <p>{{estabelecimento.logradouro}}, {{estabelecimento.numero}} - {{estabelecimento.bairro}}</p>
-            <!-- QR para debugs e uso no checkin, excluir esse campo depois -->  
-            <!--
-            <div *ngFor="let mesa of estabelecimento.mesas" class="qr">
-                <h2>Mesa {{mesa.numero}} - {{mesa.status}}</h2><br>
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{rede.key}}__{{estabelecimento.key}}__{{mesa.key}}" />
-            
-            </div>
-          <div style="clear:both"></div>
-          -->
-          </ion-item>
-        </ng-template>
-      </ng-template>
-  </ion-list>
 <ion-content>
+  
+  <ng-template ngFor let-rede [ngForOf]="redeArray" >
+    <div class="image-container" *ngFor="let estabelecimento of rede.estabelecimentos" (click)="showOptions(rede.key, estabelecimento.key)">
+        <img class="image-header" [src]=estabelecimento.imgURL>
+        <div class="image-subscription">
+          <p class="image-subscription-text-left">
+            {{estabelecimento.nome}}<br>
+            {{estabelecimento.logradouro}}, {{estabelecimento.numero}} - {{estabelecimento.bairro}}
+          </p>
+
+          <p class="image-subscription-text-right info-available"
+              *ngIf="estabelecimento.dias_funcionamento.indexOf(dataAtual.getDay()) != -1 &&
+                dataAtual.getHours() >= estabelecimento.horario_abertura.getHours() &&
+                dataAtual.getHours() <= estabelecimento.horario_fechamento.getHours();else fechado">
+            Aberto
+          </p>
+          <ng-template #fechado>
+            <p class="image-subscription-text-right info-unavailable">Fechado</p>
+          </ng-template>
+        </div>
+        <!-- QR para debugs e uso no checkin, excluir esse campo depois -->  
+        <!--
+        <div *ngFor="let mesa of estabelecimento.mesas" class="qr">
+            <h2>Mesa {{mesa.numero}} - {{mesa.status}}</h2><br>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{rede.key}}__{{estabelecimento.key}}__{{mesa.key}}" />
+        
+        </div>
+      <div style="clear:both"></div>
+      -->
+    </div>
+  </ng-template>
+  
+</ion-content>

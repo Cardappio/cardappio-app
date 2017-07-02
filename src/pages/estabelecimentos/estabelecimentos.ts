@@ -21,11 +21,15 @@ export class EstabelecimentosPage {
   redeArray: Rede[] ;
   originalRedeArray: Rede[];
 
+  dataAtual: Date;
+  diasFuncionamentoArray: Array<string>;
+
   constructor(public navCtrl: NavController,  private alertCtrl: AlertController , private db: DataService, private utils: Utils, public geolocation: Geolocation) {
     this.toggled = false;
     this.redeArray = [];
     this.originalRedeArray = [];
-    
+    this.dataAtual = new Date();
+    this.diasFuncionamentoArray = [];
   }
   ngOnInit() {
     this.iniciarEstabelecimentos();
@@ -51,6 +55,12 @@ export class EstabelecimentosPage {
                   tmpEstab.mesas = tmpMesas;
                   tmpEstab.key = estabelecimento.key;
                   this.utils.mergeObj(estabelecimento.val(), tmpEstab); // copia o objeto remoto para o local
+                  // conversão de Horas para amostragem
+                  let hora_abertura = estabelecimento.val().horario_abertura;
+                  tmpEstab.horario_abertura.setHours(hora_abertura.split(":")[0], hora_abertura.split(":")[1]);
+                  let hora_fechamento = estabelecimento.val().horario_fechamento;
+                  tmpEstab.horario_fechamento.setHours(hora_fechamento.split(":")[0], hora_fechamento.split(":")[1]);
+                  console.log(tmpEstab);
                   tmpRede.estabelecimentos.push(tmpEstab);  // inserimos no array de estabelecimentos (usado para fins de pesquisa)
                   //this.originalEstabArray.push(tmpEstab); // inserimos no array de estabelecimentos (usado para fins de pesquisa)
               });
