@@ -9,27 +9,37 @@
   <div *ngFor="let image of myImage" style="margin:100px; float:left; width:200px;">
     <img src='{{image}}' />
   </div>-->
-  <div class="checkin-content" *ngIf="checkinService.getChecado() != true; else checked">
-    <h4 ion-text>Faça Check-in no estabelecimento desejado e tenha acesso ao cardápio</h4>
-    <ion-buttons>
-      <button ion-button color=secondary (click)="lerqrcode()">CheckIn</button>
-    </ion-buttons>
-    <ion-buttons>
-      <button ion-button color=secondary (click)="checkin(redeKey, stabKey, mesaKey)">CheckIn Debug</button>
-    </ion-buttons>
+  <div *ngIf="checado != true; else checked">
+    <div class="checkin-header">
+      <h4 class="beauty-text" ion-text>Faça Check-in no estabelecimento desejado e tenha acesso ao cardápio</h4>
+    </div>
+    <div class="checkin-content">
+      <ion-buttons>
+        <button ion-button color=secondary (click)="lerqrcode()">CheckIn</button>
+      </ion-buttons>
+      <ion-buttons>
+        <button ion-button color=secondary (click)="checkin(redeKey, stabKey, mesaKey)">CheckIn Debug</button>
+      </ion-buttons>
+    </div>
+    <div class="checkin-footer">
+      <img class="checkin-footer-image" src="../../assets/images/qrc1.png">
+    </div>
   </div>
+
+  <!-- Se realizou check-in -->
   <ng-template #checked>
-    <ion-row class="checkin-header">
-      <h5 ion-text>Você fez check-in em:</h5>
+
+    <ion-row>
+      <h5 ion-text class="beauty-text">Você fez check-in em:</h5>
     </ion-row>
-    <ion-row class="checkin-header">
-      <h3 ion-text>{{checkinService.getEstabelecimento().nome}}</h3>
+    <ion-row>
+      <h3 ion-text>{{estabelecimento.nome}}</h3>
     </ion-row>
-    <ion-row class="checkin-header">
-      <h5 ion-text>Mesa {{checkinService.getMesa().numero}}</h5>
+    <ion-row class="checkin-header-mesa">
+      <h5 ion-text class="beauty-text">Mesa {{mesa.numero}}</h5>
     </ion-row>
     <hr>
-    <div *ngFor="let pedido of checkinService.getPedidos()">
+    <div *ngFor="let pedido of pedidos">
       <p>Status do pedido: {{pedido.status}}</p>
       <div *ngFor="let item of pedido.itens">
         {{item.produto.quantidade}} - {{item.produto.key}}
@@ -57,4 +67,5 @@
       </ion-fab-list>
     </ion-fab>
   </ng-template>
+
 </ion-content>

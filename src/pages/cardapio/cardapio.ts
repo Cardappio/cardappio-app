@@ -60,7 +60,11 @@ export class CardapioPage {
   }
 
   addProduto(produto: Produto){
-    if(this.checkinService.getPedido().itens.length >= this.itensMaximo){
+    let pedido;
+    this.checkinService.getPedido().subscribe(_pedido => {
+      pedido = _pedido;
+    });
+    if(pedido.itens.length >= this.itensMaximo){
       this.showAlertMaximoItens();
     }else if(produto.status == "esgotado"){
       this.showAlertEsgotado();
@@ -70,7 +74,7 @@ export class CardapioPage {
       itempedido.produto = produto;
       itempedido.observacao = this.observacao;
       itempedido.quantidade = this.quantidade;
-      for(let item of this.checkinService.getPedido().itens){
+      for(let item of pedido.itens){
         if((item.produto.key == itempedido.produto.key) && 
           (item.observacao == itempedido.observacao)){
           if((+item.quantidade + +itempedido.quantidade) > this.quantidadeMaxima){
@@ -83,7 +87,7 @@ export class CardapioPage {
         }
       }
       if(novo){
-        this.checkinService.getPedido().itens.push(itempedido);
+        pedido.itens.push(itempedido);
       }
       this.quantidade = 1;
     }
@@ -94,7 +98,11 @@ export class CardapioPage {
     this.navCtrl.pop(); // volta para pagina anterior à anterior
   }
   removeitem(item: ItemPedido){
-    this.checkinService.getPedido().itens = this.checkinService.getPedido().itens.filter(i => i !== item);
+    let pedido;
+    this.checkinService.getPedido().subscribe(_pedido => {
+      pedido = _pedido;
+    });
+    pedido.itens = pedido.itens.filter(i => i !== item);
   }
   
   mostrarProduto(produto: Produto) {

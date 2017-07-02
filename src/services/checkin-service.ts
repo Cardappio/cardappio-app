@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {Observable} from 'rxjs/Observable';
 
 import { DataService } from './data-service';
 import { Utils } from '../classes/utils';
@@ -25,33 +26,54 @@ export class CheckinService {
         this.pedidos = new Array();
     }
 
-    getChecado() {
-        return this.checado;
+    getChecado(): Observable<boolean> {
+        return Observable.create(subscriber => {
+            subscriber.next(this.checado);
+        });
     }
 
-    getEstabKey () {
-        return this.estabelecimento.key;
+    getEstabKey (): Observable<string> {
+        return Observable.create(subscriber => {
+            subscriber.next(this.estabelecimento.key);
+        });
     }
 
-    getEstabelecimento() {
-        return this.estabelecimento;
+    getEstabelecimento(): Observable<Estabelecimento> {
+        return Observable.create(subscriber => {
+            subscriber.next(this.estabelecimento);
+        });
     }
 
-    getMesa() {
-        return this.mesa;
+    getMesa(): Observable<Mesa> {
+        return Observable.create(subscriber => {
+            subscriber.next(this.mesa);
+        });
     }
 
-    getPedido() {
-        return this.pedido;
+    getPedido(): Observable<Pedido> {
+        return Observable.create(subscriber => {
+            subscriber.next(this.pedido);
+        });
     }
-    getPedidos(){
-        return this.pedidos;
+
+    getPedidos(): Observable<Pedido[]>{
+        return Observable.create(subscriber => {
+            subscriber.next(this.pedidos);
+        });
     }
     
     setPedidos() {
         let novo: boolean = true;
         this.pedidos = [];
-        this.db.getPedidosMesa(this.getEstabKey(), this.getMesa().key).subscribe(pedidos => {
+        let estabKey;
+        let mesaKey;
+        this.getEstabKey().subscribe(key => {
+            estabKey = key;
+        });
+        this.getMesa().subscribe(mesa => {
+            mesaKey = mesa.key;
+        });
+        this.db.getPedidosMesa(estabKey, mesaKey).subscribe(pedidos => {
             
             pedidos.forEach(pedido => { 
                 /*
@@ -99,6 +121,7 @@ export class CheckinService {
             });
         });
     }
+
     /*
     função para gravar o pedido no firebase
     */
@@ -114,9 +137,11 @@ export class CheckinService {
         this.resetPedido();
         this.setPedidos();
     }
+    
     resetPedido(){
         this.pedido = new Pedido();
     }
+
     getTotalPedido(){
         let total = 0;
         for(let item of this.pedido.itens){
@@ -136,6 +161,7 @@ export class CheckinService {
     setMesa(mesa: Mesa) {
         this.mesa = mesa;
     }
+
     checkOut(){
         //reset mesa
         let stabKey = this.estabelecimento.key;
@@ -149,6 +175,7 @@ export class CheckinService {
         // marca checado falso
         this.checado = false;
     }
+
     setPedido(pedido: Pedido) {
         this.pedido = pedido;
     }

@@ -1,14 +1,38 @@
 page-checkin {
-    .checkin-header ion-row{
+
+    .beauty-text {
+        font-size: 2.5rem;
+    }
+
+    .checkin-header {
+        position: relative;
         text-align: center;
     }
 
+    .checkin-header-mesa {
+        margin-top: 2rem;
+    }
+
     .checkin-content {
+        position: relative;
         text-align: center;
+    }
+
+    .checkin-content ion-buttons {
+        margin-top: 5rem;
+        margin-top:5rem;
     }
 
     .checkin-footer {
         position: absolute;
+        text-align: center;
+        width: 25rem;
+        height: 25rem;
         bottom: 0;
+    }
+
+    .checkin-footer-image{
+        width: 100%;
+        height: 100%;
     }
 }
