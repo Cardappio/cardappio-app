@@ -41,46 +41,50 @@ export class EstabelecimentosPage {
   }
 
   iniciarEstabelecimentos(){
-    this.originalRedeArray = [];
-    this.redeArray = this.originalRedeArray; 
-    this.db.setLimit(10); 
+    // this.originalRedeArray = [];
+    // this.redeArray = this.originalRedeArray; 
     this.db.getRedes().subscribe( redes => {  // retorna array de redes do bd
-        redes.forEach(rede => { // varre todas as redes
-          let tmpRede = new Rede();
-          /* retorna array de estabelecimentos do bd, de acordo com o key da rede */
-          tmpRede.key = rede.key;
-          this.db.setLimit(3); // Mudar valor do Limit
-          this.db.getEstabelecimentos(rede.key).subscribe( estabelecimentos => { 
-              estabelecimentos.forEach(estabelecimento => { // varre todos os estabelecimentos
-                  let tmpEstab = new Estabelecimento();
-                  let tmpMesas = this.listamesas(estabelecimento.key);
-                  tmpEstab.mesas = tmpMesas;
-                  tmpEstab.key = estabelecimento.key;
-                  this.utils.mergeObj(estabelecimento.val(), tmpEstab); // copia o objeto remoto para o local
-                  // conversão de Horas para amostragem
-                  let hora_abertura = estabelecimento.val().horario_abertura;
-                  tmpEstab.horario_abertura.setHours(hora_abertura.split(":")[0], hora_abertura.split(":")[1]);
-                  let hora_fechamento = estabelecimento.val().horario_fechamento;
-                  tmpEstab.horario_fechamento.setHours(hora_fechamento.split(":")[0], hora_fechamento.split(":")[1]);
-                  // calcula localização do usuário
-                  this.geolocation.getCurrentPosition()
-                      .then((position) => {
-                          // calcula distância do estabelecimento
-                          let dist = this.utils.calcdist(position.coords.latitude, position.coords.longitude, +estabelecimento.val().latitude, +estabelecimento.val().longitude);
-                          if(+dist <= +this.raio) { // se estabelecimento está no raio escolhido
-                            console.log(tmpEstab);
-                            tmpRede.estabelecimentos.push(tmpEstab);  // inserimos no array de estabelecimentos (usado para fins de pesquisa)
-                          }
-                      }, (err) => {
-                          console.log(err);
-                          // TODO: Apresentar Alert de erro
-                      });
-                  //this.originalEstabArray.push(tmpEstab); // inserimos no array de estabelecimentos (usado para fins de pesquisa)
-              });
-              this.originalRedeArray.push(tmpRede);
+      let tmpRedes: Rede[] = [];
+      redes.forEach(rede => { // varre todas as redes
+        let tmpRede = new Rede();
+        tmpRede.key = rede.key;
+        tmpRede.nome = rede.nome;
+        /* retorna array de estabelecimentos do bd, de acordo com o key da rede */
+        this.db.getEstabelecimentos(rede.key).subscribe( estabelecimentos => {
+          let tmpEstabelecimentos: Estabelecimento[] = [];
+          estabelecimentos.forEach(estabelecimento => { // varre todos os estabelecimentos
+            let tmpMesas: Array<any>;
+            let tmpEstab = new Estabelecimento();
+            tmpMesas = this.listamesas(estabelecimento.key);
+            tmpEstab.mesas = tmpMesas;
+            tmpEstab.key = estabelecimento.key;
+            this.utils.mergeObj(estabelecimento.val(), tmpEstab); // copia o objeto remoto para o local
+            // conversão de Horas para amostragem
+            let hora_abertura = estabelecimento.val().horario_abertura;
+            tmpEstab.horario_abertura.setHours(hora_abertura.split(":")[0], hora_abertura.split(":")[1]);
+            let hora_fechamento = estabelecimento.val().horario_fechamento;
+            tmpEstab.horario_fechamento.setHours(hora_fechamento.split(":")[0], hora_fechamento.split(":")[1]);
+            // calcula localização do usuário
+            this.geolocation.getCurrentPosition()
+                .then((position) => {
+                    // calcula distância do estabelecimento
+                    let dist = this.utils.calcdist(position.coords.latitude, position.coords.longitude, +estabelecimento.val().latitude, +estabelecimento.val().longitude);
+                    if(+dist <= +this.raio) { // se estabelecimento está no raio escolhido
+                      tmpEstabelecimentos.push(tmpEstab);
+                    }
+                }, (err) => {
+                    console.log(err);
+                    // TODO: Apresentar Alert de erro
+                });
+            //this.originalEstabArray.push(tmpEstab); // inserimos no array de estabelecimentos (usado para fins de pesquisa)
           });
+          tmpRede.estabelecimentos = tmpEstabelecimentos;  // inserimos no array de estabelecimentos (usado para fins de pesquisa)
         });
-        this.redeArray = this.originalRedeArray;       
+        tmpRedes.push(tmpRede);
+      });
+      this.originalRedeArray = tmpRedes;
+      this.redeArray = this.originalRedeArray;
+      console.log(this.redeArray);    
    });
     // this.aplicaraio(this.raio); 
     // console.log(this.latUsuario);
