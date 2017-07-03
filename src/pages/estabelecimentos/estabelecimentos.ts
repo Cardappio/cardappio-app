@@ -124,6 +124,7 @@ export class EstabelecimentosPage {
       this.originalRedeArray.forEach(rede => {
           let tmpRede = new Rede(); // rede temporaria para armazenar apenas as buscadas
           rede.estabelecimentos.forEach(estab => {
+            tmpRede.key = rede.key;
             let aux: string = estab.nome;
             if(aux.toLowerCase().includes(term.toLowerCase())){
                 tmpRede.estabelecimentos.push(estab); // checa o nome do estabelecimento e adiciona na rede temporaria
