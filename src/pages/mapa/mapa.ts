@@ -89,17 +89,21 @@ export class MapaPage {
   }
 
   getPosition(){
+    let ret : Array<number> = new Array(); 
     this.geolocation.getCurrentPosition()
         .then((position) => {
             let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             console.log("Pos encontrada: " + latLng);
             this.latUsuario = position.coords.latitude;
             this.lngUsuario = position.coords.longitude
+            ret.push(position.coords.latitude);
+            ret.push(position.coords.longitude);
             this.map.setCenter(latLng);
         }, (err) => {
             console.log(err);
             this.showAlertPosition();
         });
+        return ret;
   }
 
   //TODO: função para reconhecer cliques dentro do infowindow, para por exemplo carregar a rota
@@ -140,8 +144,9 @@ export class MapaPage {
 
       /* TODO: ver uma forma de usar template para o infowindow depois */
       let desc = estab.nome;
-      let dist = this.utils.calcdist(this.latUsuario, this.lngUsuario, estab.latitude, estab.longitude);
-      console.log(this.latUsuario +"/"+estab.latitude);
+      let coords = this.getPosition();
+      let dist = this.utils.calcdist(coords[0], coords[1], estab.latitude, estab.longitude);
+      console.log(coords[0] +"/"+estab.latitude);
       let content =   "<div id=\"infowindow\"><h3>" + 
                       desc + 
                       "<br></h3>À " + 

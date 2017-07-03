@@ -5,12 +5,7 @@
 </ion-header>
 
 <ion-content padding>
-  <!--<button (click)="qrcodegen()">Click</button>
-  <div *ngFor="let image of myImage" style="margin:100px; float:left; width:200px;">
-    <img src='{{image}}' />
-  </div>-->
-<<<<<<< HEAD
-  <div *ngIf="checado != true; else checked">
+  <div *ngIf="checkinService.checado != true; else checked">
     <div class="checkin-header">
       <h4 class="beauty-text" ion-text>Faça Check-in no estabelecimento desejado e tenha acesso ao cardápio</h4>
     </div>
@@ -25,18 +20,6 @@
     <div class="checkin-footer">
       <img class="checkin-footer-image" src="https://firebasestorage.googleapis.com/v0/b/cardappio-60ff4.appspot.com/o/qrc1.png?alt=media&token=8477146a-a2d4-4a83-a25c-90cf7b082009">
     </div>
-=======
-  <div class="checkin-content" *ngIf="checkinService.getChecado() != true; else checked">
-    <h4 ion-text>Faça Check-in no estabelecimento desejado e tenha acesso ao cardápio</h4>
-    <ion-buttons>
-      <button ion-button color=secondary (click)="lerqrcode()">CheckIn</button>
-    </ion-buttons>
-    <!--
-    <ion-buttons>
-      <button ion-button color=secondary (click)="checkin(redeKey, stabKey, mesaKey)">CheckIn Debug</button>
-    </ion-buttons>
-    -->
->>>>>>> pseudoadm
   </div>
 
   <!-- Se realizou check-in -->
@@ -46,13 +29,13 @@
       <h5 ion-text class="beauty-text">Você fez check-in em:</h5>
     </ion-row>
     <ion-row>
-      <h3 ion-text>{{estabelecimento.nome}}</h3>
+      <h3 ion-text>{{checkinService.getEstabelecimento().nome}}</h3>
     </ion-row>
     <ion-row class="checkin-header-mesa">
-      <h5 ion-text class="beauty-text">Mesa {{mesa.numero}}</h5>
+      <h5 ion-text class="beauty-text">Mesa {{checkinService.getMesa().numero}}</h5>
     </ion-row>
     <hr>
-    <div *ngFor="let pedido of pedidos">
+    <div *ngFor="let pedido of checkinService.getPedidos()">
       <p>Status do pedido: {{pedido.status}}</p>
       <div *ngFor="let item of pedido.itens">
         {{item.quantidade}} - {{item.produto.key}}

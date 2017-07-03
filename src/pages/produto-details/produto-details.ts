@@ -47,11 +47,7 @@ export class ProdutoDetailsPage {
     
   }
   addProduto(produto: Produto){
-    let pedido;
-    this.checkinservice.getPedido().subscribe(_pedido => {
-      pedido = _pedido;
-    });
-    if(pedido.itens.length >= this.itensMaximo){
+    if(this.checkinservice.getPedido().itens.length >= this.itensMaximo){
       this.showAlertMaximoItens();
     }else if(produto.status == "esgotado"){
       this.showAlertEsgotado();
@@ -61,7 +57,7 @@ export class ProdutoDetailsPage {
       itempedido.produto = produto;
       itempedido.observacao = this.observacao;
       itempedido.quantidade = this.quantidade;
-      for(let item of pedido.itens){
+      for(let item of this.checkinservice.getPedido().itens){
         if((item.produto.key == itempedido.produto.key) && 
           (item.observacao == itempedido.observacao)){
           if((+item.quantidade + +itempedido.quantidade) > this.quantidadeMaxima){
@@ -74,7 +70,7 @@ export class ProdutoDetailsPage {
         }
       }
       if(novo){
-        pedido.itens.push(itempedido);
+        this.checkinservice.getPedido().itens.push(itempedido);
       }
       this.quantidade = 1;
     }

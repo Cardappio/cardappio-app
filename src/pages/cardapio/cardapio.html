@@ -9,7 +9,7 @@
 
 <ion-content>
   <div class="pedido" *ngIf="checkinService.getTotalPedido() > 0">
-    <div style="text-align: center"><b>Seu Pedido</b></div>
+    <div style="text-align: center"><b>Seu Pedido</b> ({{checkinService.getTotalPedido() | currency:'BRL':true:'1.2-2'}})</div>
     <ul class="itens">
       <li *ngFor="let item of checkinService.getPedido().itens" (click)="onSelect(item)">
         <span class="quantidade">{{item.quantidade}} - </span>
@@ -18,10 +18,8 @@
         <button class="delete" (click)="removeitem(item); $event.stopPropagation()">x</button>
       </li>
     </ul>
-    <span class="total">Total: {{checkinService.getTotalPedido() | currency:'BRL':true:'1.2-2'}}</span><br>
-    <div>
+    <br><br>
     <button class="button-bottom" ion-button icon-start small full color="secondary" (click)='finalizaPedido();'>FINALIZAR</button>
-    </div>
   </div>
   
 

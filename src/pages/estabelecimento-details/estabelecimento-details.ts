@@ -70,12 +70,8 @@ export class EstabelecimentoDetails {
   
   mostrarStatusMesa() {
     this.popover.dismiss();
-    let estab;
-    this.checkinService.getEstabelecimento().subscribe(_estab => {
-      estab = _estab;
-    });
-    if(this.estabKey == estab.key &&
-    estab.key != ''){ // mostra o popup apenas se o usuário tiver feito checkin no estabelecimento
+    if(this.estabKey == this.checkinService.getEstabelecimento().key &&
+    this.checkinService.getEstabelecimento().key != ''){ // mostra o popup apenas se o usuário tiver feito checkin no estabelecimento
       this.db.getMesa(this.estabKey, this.mesaKey).subscribe( mesa => {
         this.mesaescolhida.key = mesa.$key;
         this.mesaescolhida.numero = mesa.numero;
@@ -92,11 +88,7 @@ export class EstabelecimentoDetails {
     }
   }
   mostraPedidos(){
-    let pedidos;
-    this.checkinService.getPedido().subscribe(_pedidos => {
-      pedidos = _pedidos;
-    });
-    for (let pedido of pedidos){
+    for (let pedido of this.checkinService.getPedidos()){
       console.log(pedido);
     }
   }

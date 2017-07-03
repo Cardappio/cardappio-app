@@ -21,8 +21,6 @@ import { CardapioPage } from '../cardapio/cardapio';
 })
 export class CheckinPage {
 
-  checado: boolean = false;
-  mesa: Mesa;
   estabelecimento: Estabelecimento;
   private pedidos: Array<Pedido>;
 
@@ -37,32 +35,15 @@ export class CheckinPage {
   private utils: Utils,
   public alertCtrl: AlertController,
   private checkinService: CheckinService) {
-    this.mesa = new Mesa();
-    this.estabelecimento = new Estabelecimento();
-    this.pedidos = [];
+      this.estabelecimento = new Estabelecimento();
+      this.pedidos = [];
   }
   
   ionViewDidLoad() {
-    this.iniciarCampos();
+    if(this.checkinService.getChecado()){ // se fez checkin, pega os pedidos para atualizar em tempo real
+      //this.carregaPedidos();
+    }
   }
-
-  iniciarCampos() {
-    this.checkinService.getChecado().subscribe(checado => {
-      this.checado = checado;
-      if(this.checado) {
-        this.checkinService.getEstabelecimento().subscribe(estab => {
-          this.estabelecimento = estab;
-        });
-        this.checkinService.getMesa().subscribe(mesa => {
-          this.mesa = mesa;
-        });
-        this.checkinService.getPedidos().subscribe(pedidos => {
-          this.pedidos = pedidos;
-        });
-      }
-    });
-  }
-
   /*
   Aqui o código deve estar no formado x__y__z, onde:
   x identifica a rede de estabelecimentos
@@ -74,75 +55,61 @@ export class CheckinPage {
         this.bcScan.scan().then((barcodeData) => {
             dados = barcodeData.text;
             // criar teste para checar a integridade dos dados antes de enviar para o checkin
-              this.checkin(dados.split("__")[0], dados.split("__")[1], dados.split("__")[2]);
+              this.checkin(dados.split("__")[0], dados.split("__")[1], dados.split("__")[0]);
         }, (err) => {
             console.log("Erro: " + err);
         });
   }
-
   checkin(redeKey: string, estabKey: string, mesaKey: string){
     this.stabKey = estabKey;
     this.mesaKey = mesaKey;
     this.redeKey = redeKey;
-    let jaChecado;
-    this.checkinService.getChecado().subscribe(_jaChecado => {
-      jaChecado = _jaChecado;
-    });
     // Verifica se já realizou checkin anteriormente
-    if(/*!jaChecado*/true) {
+    if(/*!this.checkinService.getChecado()*/true) {
       let estab = new Estabelecimento();
       let mes = new Mesa();
-      let checado = false;
+      
       this.db.getMesa(estabKey, mesaKey).subscribe(mesa => {
         // Verifica se essa Mesa está sendo usada
-        if(mesa.status == 'livre'){
+          this.checkinService.setChecado(true);
 
           // Carrega dados do estabelecimento e salva em CheckinService
           this.db.getEstabelecimento(redeKey, estabKey).subscribe(estabelecimento => {
             estab.key = estabelecimento.key;
-            this.utils.mergeObj(estabelecimento.val(), estab);          
+            this.utils.mergeObj(estabelecimento.val(), estab);
+            this.checkinService.setEstabelecimento(estab);
+            
+            // Carrega dados da mesa e salva em CheckinService
+            this.db.getMesa(estabKey, mesaKey).subscribe(mesa => {
+              mes.key = mesa.$key;
+              mes.numero = mesa.numero;
+              mes.status = mesa.status;
+              this.checkinService.setMesa(mes);
+            });
+            
           });
-
-          // Preenche dados da mesa
-          mes.key = mesaKey;
-          mes.numero = mesa.numero;
-          mes.status = 'aguardando';
-
-          this.db.updateMesa(estabKey, mesaKey, "aguardando");
-          checado = true;
-        }
+          this.db.updateMesa(estabKey, mesaKey, "ocupada");
+          // Abre tela do estabelecimento em que foi feito checkin
+          
       });
-      this.checkinService.setMesa(mes);
-      this.checkinService.setEstabelecimento(estab);
-      this.checkinService.setChecado(checado);
-      console.log(this.checkinService.checado +"/"+ checado);
+      //this.carregaPedidos();
       this.checkinService.setPedidos();
-
-      this.iniciarCampos();
     }else{
       //this.showAlertCheckinJaRealizado();
     }
-    if(this.checkinService.checado){
-      this.showOptions(redeKey, estabKey, mesaKey);
-    }else{
-      // TODO: Mostrar alert de erro
-          this.showAlertMesaOcupada();
-    }
+    this.showOptions(redeKey, estabKey, mesaKey);
     // TODO: enviar dados para o servidor
     // TODO: solicitar aprovacao do gerente
     
   }
-
   showPedidos(){
-    this.checkinService.getPedidos().subscribe(pedidos => {
-      pedidos.forEach(pedido => {
-        pedido.itens.forEach(item => {
-          console.log(item);
-        });
-      });
-    });
+    console.log(this.checkinService.getPedidos());
+    for(let pedido of this.checkinService.getPedidos()){
+      for(let item of pedido.itens){
+        console.log(item);
+      }
+    }
   }
-
   // Carrega os dados do pedido e salva em CheckService
   carregaPedidos() {
     let estabKey = this.stabKey;
@@ -193,12 +160,9 @@ export class CheckinPage {
 
   showCardapio() {
     let estab = new Estabelecimento();
-    this.checkinService.getEstabelecimento().subscribe(estabelecimento => {
-      estab = estabelecimento;
-    });
+    estab = this.checkinService.getEstabelecimento();
     this.navCtrl.push(CardapioPage, estab);
   }
-
   checkOut(){
     this.checkinService.checkOut();
   }
@@ -217,6 +181,7 @@ export class CheckinPage {
       });
     confirm.present();
   }
+
   showAlertCheckinJaRealizado() {
     let confirm = this.alertCtrl.create({
         title: 'Checkin Realizado!',
