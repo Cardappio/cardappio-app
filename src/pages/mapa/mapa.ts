@@ -92,6 +92,7 @@ export class MapaPage {
     this.geolocation.getCurrentPosition()
         .then((position) => {
             let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            console.log("Pos encontrada: " + latLng);
             this.latUsuario = position.coords.latitude;
             this.lngUsuario = position.coords.longitude
             this.map.setCenter(latLng);
@@ -140,6 +141,7 @@ export class MapaPage {
       /* TODO: ver uma forma de usar template para o infowindow depois */
       let desc = estab.nome;
       let dist = this.utils.calcdist(this.latUsuario, this.lngUsuario, estab.latitude, estab.longitude);
+      console.log(this.latUsuario +"/"+estab.latitude);
       let content =   "<div id=\"infowindow\"><h3>" + 
                       desc + 
                       "<br></h3>À " + 
@@ -152,6 +154,7 @@ export class MapaPage {
 
       this.infowindow.push(tmpinfowindow);
       google.maps.event.addListener(this.marker[index], 'click', () => {
+          console.log("Key : " + index +"/ infowindow: "+ this.infowindow[index]);
           this.infowindow[index].open(this.map, this.marker[index]);
           this.keyEstAtivo = index;
       });
@@ -166,7 +169,6 @@ export class MapaPage {
         let nome = this.estabelecimentos[this.keyEstAtivo].nome;
         let label = encodeURI(nome.toString()); // encode the label!
         window.open('geo:'+ latDest +', ' + lngDest +'?q='+ latDest +', ' + lngDest + '(' + label + ')', '_system');
-        
     }else{
         this.showAlertNoSelect();
     }

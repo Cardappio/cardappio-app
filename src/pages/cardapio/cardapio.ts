@@ -64,7 +64,10 @@ export class CardapioPage {
     this.checkinService.getPedido().subscribe(_pedido => {
       pedido = _pedido;
     });
-    if(pedido.itens.length >= this.itensMaximo){
+    console.log("status do checkin: " + this.checkinService.checado);
+    if(!this.checkinService.checado){
+      this.showAlertSemCheckIn("Para adicionar produtos é necessário ter feito check-in");
+    }else if(pedido.itens.length >= this.itensMaximo){
       this.showAlertMaximoItens();
     }else if(produto.status == "esgotado"){
       this.showAlertEsgotado();
@@ -147,6 +150,20 @@ export class CardapioPage {
     let confirm = this.alertCtrl.create({
         title: 'Quantidade maxima de itens',
         message: 'São permitidos no máximo ' + this.quantidadeMaxima + ' itens por pedido',
+        buttons: [
+          {
+            text: 'OK',
+            handler: () => {
+            }
+          }
+        ]
+      });
+    confirm.present();
+  }
+  showAlertSemCheckIn(mensagem: string) {
+    let confirm = this.alertCtrl.create({
+        title: 'Checkin não efetuado',
+        message: mensagem,
         buttons: [
           {
             text: 'OK',

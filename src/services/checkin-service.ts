@@ -12,7 +12,7 @@ import { Produto } from '../classes/produto';
 @Injectable()
 export class CheckinService {
     
-    private checado: boolean; // Condição se usuário efetuou checj-in ou não
+    public checado: boolean; // Condição se usuário efetuou checj-in ou não
     private estabelecimento: Estabelecimento; // Estabelecimento em que está checado
     private mesa: Mesa; // Mesa em que está checado
     private pedido: Pedido; // Pedido do usuário
