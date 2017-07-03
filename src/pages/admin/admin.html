@@ -1,0 +1,41 @@
+<ion-header>
+  
+  <ion-navbar color="primary">
+      
+      <!-- Título -->
+      <ion-title >Admin</ion-title>
+      
+      <ion-buttons end>
+        <button ion-button icon-only (click)="settings()"><ion-icon name="more"></ion-icon></button>
+      </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+  
+  <div class="rede" *ngFor="let rede of redeArray">
+      <h3>Rede de restaurantes {{rede.nome}} <button class="atualiza" (click)="iniciarEstabelecimentos(); $event.stopPropagation()">Atualizar</button></h3>
+      <div class="estabelecimento" *ngFor="let estabelecimento of rede.estabelecimentos">
+        <div class="nomeestab"><h2>{{estabelecimento.nome}}</h2></div>
+        <div class="mesas" *ngFor="let mesa of estabelecimento.mesas">
+             <p>Mesa número {{mesa.numero}} ( {{mesa.status}} )</p>
+            <div class="pedidos" *ngFor="let pedido of mesa.pedidos" [class.aguardando]="pedido.status=='aguardando'"
+            (swipeleft)="atualizaPedido('atendendo', estabelecimento.key, mesa.key, pedido.key)"
+            (swiperight)="atualizaPedido('atendido', estabelecimento.key, mesa.key, pedido.key)"
+            (longPress)="excluirPedido(estabelecimento.key, mesa.key, pedido.key)"
+            (dblclick)="excluirPedido(estabelecimento.key, mesa.key, pedido.key)">
+                <p><b>{{pedido.status}}</b></p>
+                <div class="itens" *ngFor="let item of pedido.itens">
+                    <div class="produto">
+                        {{item.produto.nome}} - {{item.quantidade}} (obs: {{item.observacao}})
+                    </div>
+                </div>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <div style="clear:both"></div>
+      </div>
+  </div>  
+  
+<ion-content>

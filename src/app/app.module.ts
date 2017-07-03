@@ -12,6 +12,7 @@ import { EstabelecimentoDetailsModule } from '../pages/estabelecimento-details/e
 import { ProdutoDetailsPageModule } from '../pages/produto-details/produto-details.module';
 import { CheckinModule } from '../pages/checkin/checkin.module';
 import { MapaModule } from '../pages/mapa/mapa.module';
+import { AdminModule } from '../pages/admin/admin.module';
 import { CardapioPageModule } from '../pages/cardapio/cardapio.module';
 import { PopoverPage } from '../pages/estabelecimento-details/popover';
 
@@ -54,6 +55,7 @@ export const firebaseConfig = {
     HttpModule,
     IonicModule.forRoot(MyApp),
     MapaModule,
+    AdminModule,
     EstabelecimentosModule,
     EstabelecimentoDetailsModule,
     ProdutoDetailsPageModule,
