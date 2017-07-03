@@ -91,6 +91,7 @@ export class AdminPage {
                 observei que isso ocorre sempre que se altera qualquer valor no firebase,
                 ou seja, toda vez que o firebase atualiza, esse método aqui é chamado
                 */
+                /*
                 let novo: boolean = true;
                 for(let rede of this.redeArray){
                     for(let estab of rede.estabelecimentos){
@@ -103,6 +104,7 @@ export class AdminPage {
                         }
                     }
                 }
+                */
                 let pedidoTmp = new Pedido();
                 pedidoTmp.key = pedido.key;
                 this.utils.mergeObj(pedido.val(), pedidoTmp);
@@ -128,9 +130,9 @@ export class AdminPage {
                     }
                 }
                 
-                if(novo){
+                //if(novo){
                     pedidosTmpArray.push(pedidoTmp);
-                }
+               //}
             });
         });
         return pedidosTmpArray;        
@@ -165,5 +167,30 @@ export class AdminPage {
   }
   atualizaPedido(status: string, stabKey: string, mesaKey: string, pedidoKey: string){
     this.db.atualizaPedido(status, stabKey, mesaKey, pedidoKey);
+    this.iniciarEstabelecimentos();
+  }
+  excluirPedido(stabKey: string, mesaKey: string, pedidoKey: string){
+    this.showAlertExcluir(mesaKey, stabKey, pedidoKey);
+  }
+  showAlertExcluir(stabKey: string, mesaKey: string, pedidoKey: string) {
+    let confirm = this.alertCtrl.create({
+        title: 'Excluir Pedido',
+        message: 'Deseja realmente excluir este pedido?',
+        buttons: [
+          {
+            text: 'Sim',
+            handler: () => {
+              this.db.excluirPedido(stabKey, mesaKey, pedidoKey);
+              this.iniciarEstabelecimentos();
+            }
+          },
+          {
+            text: 'Não',
+            handler: () => {
+            }
+          }
+        ]
+      });
+    confirm.present();
   }
 }

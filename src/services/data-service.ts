@@ -129,6 +129,13 @@ export class DataService {
         });
     }
     /*
+    exclui um pedido
+    */
+    excluirPedido(estabKey: string, mesaKey: string, pedidoKey: string){
+        let pedido = this.db.object('/pedidos/'+estabKey+'/'+mesaKey+'/'+pedidoKey);
+        pedido.remove();
+    }
+    /*
      * Retorna produtos de um pedido em uma mesa
     */
     getProdutosPedido(estabKey: string, mesaKey: string, pedidoKey: string) {
