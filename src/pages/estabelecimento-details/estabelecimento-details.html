@@ -12,9 +12,13 @@
     <div class="image-subscription">
       <p class="image-subscription-text-left">{{estabelecimento.nome}}</p>
       <p class="image-subscription-text-right info-available"
-         *ngIf="estabelecimento.dias_funcionamento.indexOf(dataAtual.getDay()) != -1 &&
-                dataAtual.getHours() >= estabelecimento.horario_abertura.getHours() &&
-                dataAtual.getHours() <= estabelecimento.horario_fechamento.getHours();else fechado">
+         *ngIf="utils.validarHorario(
+                estabelecimento.horario_abertura.getHours(),
+                estabelecimento.horario_fechamento.getHours(),
+                estabelecimento.horario_abertura.getMinutes(),
+                estabelecimento.horario_fechamento.getMinutes(),
+                dataAtual.getHours(),
+                dataAtual.getMinutes()); else fechado">
         Aberto
       </p>
       <ng-template #fechado>
