@@ -81,7 +81,7 @@ export class CheckinPage {
             
             // Carrega dados da mesa e salva em CheckinService
             this.db.getMesa(estabKey, mesaKey).subscribe(mesa => {
-              mes.key = mesa.$key;
+              mes.key = mesaKey;
               mes.numero = mesa.numero;
               mes.status = mesa.status;
               this.checkinService.setMesa(mes);
