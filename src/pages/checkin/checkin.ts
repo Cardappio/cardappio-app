@@ -123,7 +123,7 @@ export class CheckinPage {
     }else{
       //this.showAlertCheckinJaRealizado();
     }
-    //this.showOptions(redeKey, estabKey, mesaKey);
+    this.showOptions(redeKey, estabKey, mesaKey);
     // TODO: enviar dados para o servidor
     // TODO: solicitar aprovacao do gerente
     
