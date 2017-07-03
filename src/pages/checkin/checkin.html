@@ -38,7 +38,7 @@
     <div *ngFor="let pedido of checkinService.getPedidos()">
       <p>Status do pedido: {{pedido.status}}</p>
       <div *ngFor="let item of pedido.itens">
-        {{item.quantidade}} - {{item.produto.key}}
+        {{item.quantidade}} - {{item.produto.nome}}
       </div>
       
     </div>
