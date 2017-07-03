@@ -110,20 +110,24 @@ export class CheckinPage {
 
           this.db.updateMesa(estabKey, mesaKey, "aguardando");
           checado = true;
-        }else {
-          // TODO: Mostrar alert de erro
         }
       });
       this.checkinService.setMesa(mes);
       this.checkinService.setEstabelecimento(estab);
       this.checkinService.setChecado(checado);
+      console.log(this.checkinService.checado +"/"+ checado);
       this.checkinService.setPedidos();
 
       this.iniciarCampos();
     }else{
       //this.showAlertCheckinJaRealizado();
     }
-    this.showOptions(redeKey, estabKey, mesaKey);
+    if(this.checkinService.checado){
+      this.showOptions(redeKey, estabKey, mesaKey);
+    }else{
+      // TODO: Mostrar alert de erro
+          this.showAlertMesaOcupada();
+    }
     // TODO: enviar dados para o servidor
     // TODO: solicitar aprovacao do gerente
     
@@ -213,7 +217,6 @@ export class CheckinPage {
       });
     confirm.present();
   }
-
   showAlertCheckinJaRealizado() {
     let confirm = this.alertCtrl.create({
         title: 'Checkin Realizado!',
