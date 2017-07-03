@@ -61,9 +61,11 @@ export class EstabelecimentosPage {
             this.utils.mergeObj(estabelecimento.val(), tmpEstab); // copia o objeto remoto para o local
             // conversão de Horas para amostragem
             let hora_abertura = estabelecimento.val().horario_abertura;
-            tmpEstab.horario_abertura.setHours(hora_abertura.split(":")[0], hora_abertura.split(":")[1]);
+            tmpEstab.horario_abertura.setHours(+hora_abertura.split(":")[0], +hora_abertura.split(":")[1]);
+            console.log(+hora_abertura.split(":")[1]);
+            console.log(this.dataAtual.getMinutes().valueOf());
             let hora_fechamento = estabelecimento.val().horario_fechamento;
-            tmpEstab.horario_fechamento.setHours(hora_fechamento.split(":")[0], hora_fechamento.split(":")[1]);
+            tmpEstab.horario_fechamento.setHours(+hora_fechamento.split(":")[0], +hora_fechamento.split(":")[1]);
             // calcula localização do usuário
             this.geolocation.getCurrentPosition()
                 .then((position) => {

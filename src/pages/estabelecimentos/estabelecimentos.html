@@ -30,18 +30,26 @@
         <img class="image-header" [src]=estabelecimento.imgURL>
         <div class="image-subscription">
           <p class="image-subscription-text-left">
-            {{estabelecimento.nome}}<br>
+            {{estabelecimento.nome}} - {{estabelecimento.horario_abertura.getHours()}} e {{estabelecimento.horario_fechamento.getHours()}}<br>
             {{estabelecimento.logradouro}}, {{estabelecimento.numero}} - {{estabelecimento.bairro}}
           </p>
 
           <p class="image-subscription-text-right info-available"
-              *ngIf="estabelecimento.dias_funcionamento.indexOf(dataAtual.getDay()) != -1 &&
-                dataAtual.getHours() >= estabelecimento.horario_abertura.getHours() &&
-                dataAtual.getHours() <= estabelecimento.horario_fechamento.getHours();else fechado">
-            Aberto
+              *ngIf= "utils.validarHorario(
+                estabelecimento.horario_abertura.getHours(),
+                estabelecimento.horario_fechamento.getHours(),
+                estabelecimento.horario_abertura.getMinutes(),
+                estabelecimento.horario_fechamento.getMinutes(),
+                dataAtual.getHours(),
+                dataAtual.getMinutes()); else fechado">
+                aberto
           </p>
+
           <ng-template #fechado>
             <p class="image-subscription-text-right info-unavailable">Fechado</p>
+          </ng-template>
+          <ng-template #aberto>
+            <p class="image-subscription-text-right info-available">Aberto</p>
           </ng-template>
         </div>
         <!-- QR para debugs e uso no checkin, excluir esse campo depois -->  

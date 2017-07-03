@@ -47,4 +47,14 @@ export class Utils{
     return (earthRadiusKm * c * 1000).toFixed(0);
   }
 
+  validarHorario(hI, hF, mI, mF, hA, mA) {
+    if((hA == hI && mA >= mI) || (hA == hF && mA <= mF)) {
+      return true;
+    }
+    if(hA > hI && hA < hF) {
+      return true;
+    }else
+      return false;
+  }
+
 }
