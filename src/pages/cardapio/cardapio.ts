@@ -97,7 +97,8 @@ export class CardapioPage {
   }
   removeitem(item: ItemPedido){
     let pedido;
-    pedido.itens = pedido.itens.filter(i => i !== item);
+    
+    this.checkinService.getPedido().itens = this.checkinService.getPedido().itens.filter(i => i !== item);
   }
   
   mostrarProduto(produto: Produto) {
